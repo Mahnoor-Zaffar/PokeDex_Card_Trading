@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pokédex TCG Lab</title>
+  <link rel="preconnect" href="https://raw.githubusercontent.com">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#dex" aria-label="Pokédex TCG Lab home">
+        <span class="pokeball-mark" aria-hidden="true"></span>
+        <span>
+          <strong>Pokédex</strong>
+          <small>TCG Lab</small>
+        </span>
+      </a>
+
+      <nav class="nav-tabs" aria-label="Primary">
+        <a class="nav-link active" href="#dex" data-view-link="dex">Dex</a>
+        <a class="nav-link" href="#battle" data-view-link="battle">Battle</a>
+        <a class="nav-link" href="#collection" data-view-link="collection">Saved</a>
+      </nav>
+
+      <section class="sidebar-panel">
+        <p class="panel-kicker">Collection</p>
+        <div class="stat-pair">
+          <span>Cards</span>
+          <strong id="cardCount">0</strong>
+        </div>
+        <div class="stat-pair">
+          <span>Saved</span>
+          <strong id="savedCount">0</strong>
+        </div>
+        <div class="stat-pair">
+          <span>Deck Power</span>
+          <strong id="deckPower">0</strong>
+        </div>
+      </section>
+
+      <section class="sidebar-panel compact">
+        <p class="panel-kicker">Tip</p>
+        <p>Attach energy before attacking. Retreat when your active card is close to being knocked out.</p>
+      </section>
+    </aside>
+
+    <main>
+      <section class="hero-band" aria-labelledby="pageTitle">
+        <div>
+          <p class="eyebrow">Trading-card Pokédex</p>
+          <h1 id="pageTitle">Build a team, inspect cards, and play a quick Pokémon TCG battle.</h1>
+        </div>
+        <div class="hero-card" aria-label="Featured card preview">
+          <div class="mini-card fire">
+            <span class="mini-hp">HP 120</span>
+            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png" alt="Charizard artwork">
+            <strong>Charizard</strong>
+            <small>Flare Blitz · 90</small>
+          </div>
+        </div>
+      </section>
+
+      <section id="dex" class="view active" data-view="dex">
+        <div class="toolbar">
+          <label class="search-box">
+            <span>Search</span>
+            <input id="searchInput" type="search" placeholder="Name, number, or type">
+          </label>
+          <label class="select-box">
+            <span>Type</span>
+            <select id="typeFilter"></select>
+          </label>
+          <label class="select-box">
+            <span>Sort</span>
+            <select id="sortFilter">
+              <option value="number">Number</option>
+              <option value="name">Name</option>
+              <option value="hp">HP</option>
+              <option value="attack">Attack</option>
+              <option value="speed">Speed</option>
+            </select>
+          </label>
+          <button class="icon-button" id="randomButton" type="button" title="Open a random card">↯</button>
+        </div>
+        <div id="pokemonGrid" class="pokemon-grid"></div>
+      </section>
+
+      <section id="battle" class="view" data-view="battle">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Battle Table</p>
+            <h2>Simple Pokémon TCG Match</h2>
+          </div>
+          <div class="battle-actions">
+            <button id="newGameButton" class="primary-button" type="button">New Game</button>
+            <button id="endTurnButton" type="button">End Turn</button>
+          </div>
+        </div>
+
+        <div class="battle-layout">
+          <div class="player-zone opponent-zone">
+            <div class="zone-header">
+              <strong>Opponent</strong>
+              <span id="opponentPrizes">Prizes 3</span>
+            </div>
+            <div id="opponentActive" class="active-slot"></div>
+            <div id="opponentBench" class="bench-row"></div>
+          </div>
+
+          <div class="battle-center">
+            <div class="turn-meter">
+              <span id="turnOwner">Your turn</span>
+              <strong id="battleStatus">Set an active Pokémon and attack.</strong>
+            </div>
+            <div id="battleLog" class="battle-log" aria-live="polite"></div>
+          </div>
+
+          <div class="player-zone">
+            <div class="zone-header">
+              <strong>You</strong>
+              <span id="playerPrizes">Prizes 3</span>
+            </div>
+            <div id="playerActive" class="active-slot"></div>
+            <div id="playerBench" class="bench-row"></div>
+            <div class="hand-panel">
+              <div class="zone-header">
+                <strong>Hand</strong>
+                <span id="deckCount">Deck 0</span>
+              </div>
+              <div id="playerHand" class="hand-row"></div>
+            </div>
+            <div class="battle-actions">
+              <button id="drawButton" type="button">Draw</button>
+              <button id="energyButton" type="button">Attach Energy</button>
+              <button id="attackOneButton" class="primary-button" type="button">Attack 1</button>
+              <button id="attackTwoButton" class="primary-button" type="button">Attack 2</button>
+              <button id="retreatButton" type="button">Retreat</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="collection" class="view" data-view="collection">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Saved Cards</p>
+            <h2>Your favorite pulls</h2>
+          </div>
+          <button id="clearSavedButton" type="button">Clear Saved</button>
+        </div>
+        <div id="savedGrid" class="pokemon-grid"></div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="detailDialog" class="detail-dialog">
+    <article id="detailContent"></article>
+    <button id="closeDialogButton" class="dialog-close" type="button" aria-label="Close details">×</button>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,30 +1,61 @@
 :root {
-  --bg: #f4f7fb;
-  --panel: #ffffff;
+  color-scheme: light;
+  --bg: #f6f8fc;
+  --bg-soft: #eef3fa;
+  --panel: rgba(255, 255, 255, 0.86);
+  --panel-solid: #ffffff;
+  --panel-strong: #f7f9fd;
   --ink: #172033;
-  --muted: #667085;
-  --line: #dfe5ee;
+  --card-ink: #172033;
+  --muted: #657188;
+  --line: rgba(23, 32, 51, 0.12);
+  --line-strong: rgba(23, 32, 51, 0.24);
   --accent: #e83f5b;
   --accent-2: #1677ff;
+  --accent-3: #f3bf38;
   --good: #168c62;
   --warn: #c47a11;
-  --shadow: 0 18px 45px rgba(23, 32, 51, 0.11);
+  --danger: #c92f48;
+  --shadow: 0 24px 70px rgba(23, 32, 51, 0.14);
+  --shadow-soft: 0 14px 36px rgba(23, 32, 51, 0.09);
   --radius: 8px;
+  --ease: 180ms ease;
 }
 
 * {
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
   background:
-    linear-gradient(135deg, rgba(232, 63, 91, 0.10), transparent 28%),
-    linear-gradient(315deg, rgba(22, 119, 255, 0.12), transparent 32%),
-    var(--bg);
+    radial-gradient(circle at 18% 8%, rgba(232, 63, 91, 0.15), transparent 28rem),
+    radial-gradient(circle at 84% 12%, rgba(22, 119, 255, 0.16), transparent 30rem),
+    linear-gradient(145deg, #ffffff 0%, #f6f8fc 46%, #eef3fa 100%);
   color: var(--ink);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  text-rendering: optimizeLegibility;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(23, 32, 51, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(23, 32, 51, 0.035) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.58), transparent 74%);
+}
+
+img {
+  max-width: 100%;
 }
 
 button,
@@ -33,40 +64,75 @@ select {
   font: inherit;
 }
 
+button,
+.nav-link,
+.pokemon-card,
+.battle-card {
+  -webkit-tap-highlight-color: transparent;
+}
+
 button {
-  border: 1px solid var(--line);
-  background: var(--panel);
-  color: var(--ink);
   min-height: 42px;
+  border: 1px solid var(--line);
   border-radius: var(--radius);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(247, 249, 253, 0.92));
+  color: var(--ink);
   padding: 0 14px;
   cursor: pointer;
-  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+  box-shadow: 0 9px 20px rgba(23, 32, 51, 0.08);
+  transition:
+    transform var(--ease),
+    border-color var(--ease),
+    background var(--ease),
+    box-shadow var(--ease),
+    color var(--ease);
 }
 
 button:hover {
   transform: translateY(-1px);
-  border-color: #b9c5d6;
-  box-shadow: 0 8px 20px rgba(23, 32, 51, 0.08);
+  border-color: var(--line-strong);
+  background: #ffffff;
+  box-shadow: 0 16px 32px rgba(23, 32, 51, 0.13);
+}
+
+button:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: 0 7px 16px rgba(23, 32, 51, 0.12);
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+.nav-link:focus-visible,
+.pokemon-card:focus-visible {
+  outline: 3px solid rgba(22, 119, 255, 0.28);
+  outline-offset: 3px;
 }
 
 button:disabled {
   cursor: not-allowed;
-  opacity: 0.55;
+  opacity: 0.52;
   transform: none;
   box-shadow: none;
 }
 
 .primary-button {
-  background: var(--ink);
+  border-color: rgba(232, 63, 91, 0.55);
+  background: linear-gradient(135deg, #e83f5b, #1677ff);
   color: #fff;
-  border-color: var(--ink);
+}
+
+.primary-button:hover {
+  border-color: rgba(23, 32, 51, 0.16);
+  background: linear-gradient(135deg, #f04f68, #2d86ff);
 }
 
 .app-shell {
   display: grid;
-  grid-template-columns: 260px minmax(0, 1fr);
+  grid-template-columns: 270px minmax(0, 1fr);
   min-height: 100vh;
+  position: relative;
 }
 
 .sidebar {
@@ -74,9 +140,12 @@ button:disabled {
   top: 0;
   height: 100vh;
   padding: 24px;
-  border-right: 1px solid rgba(223, 229, 238, 0.85);
-  background: rgba(255, 255, 255, 0.78);
-  backdrop-filter: blur(18px);
+  border-right: 1px solid var(--line);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(247, 249, 253, 0.84)),
+    rgba(255, 255, 255, 0.86);
+  backdrop-filter: blur(22px);
+  box-shadow: 16px 0 42px rgba(23, 32, 51, 0.06);
 }
 
 .brand {
@@ -91,6 +160,10 @@ button:disabled {
 .brand strong,
 .brand small {
   display: block;
+}
+
+.brand strong {
+  font-size: 1.04rem;
 }
 
 .brand small,
@@ -109,7 +182,7 @@ button:disabled {
   border-radius: 50%;
   background: linear-gradient(#e83f5b 0 45%, var(--ink) 45% 55%, #fff 55%);
   position: relative;
-  box-shadow: var(--shadow);
+  box-shadow: 0 14px 34px rgba(232, 63, 91, 0.22);
 }
 
 .pokeball-mark::after {
@@ -132,23 +205,48 @@ button:disabled {
   align-items: center;
   min-height: 44px;
   padding: 0 14px;
+  border: 1px solid transparent;
   border-radius: var(--radius);
   color: var(--muted);
   text-decoration: none;
-  font-weight: 700;
+  font-weight: 800;
+  transition:
+    transform var(--ease),
+    color var(--ease),
+    background var(--ease),
+    border-color var(--ease),
+    box-shadow var(--ease);
+}
+
+.nav-link:hover {
+  transform: translateX(2px);
+  color: var(--ink);
+  border-color: var(--line);
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 8px 18px rgba(23, 32, 51, 0.06);
+}
+
+.nav-link:active {
+  transform: translateX(0);
 }
 
 .nav-link.active {
-  background: var(--ink);
-  color: #fff;
+  border-color: rgba(22, 119, 255, 0.24);
+  background:
+    linear-gradient(135deg, rgba(232, 63, 91, 0.12), rgba(22, 119, 255, 0.12)),
+    #ffffff;
+  color: var(--ink);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.82), 0 10px 22px rgba(23, 32, 51, 0.08);
 }
 
 .sidebar-panel {
   border: 1px solid var(--line);
-  background: var(--panel);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(247, 249, 253, 0.92));
   border-radius: var(--radius);
   padding: 16px;
   margin-bottom: 16px;
+  box-shadow: var(--shadow-soft);
 }
 
 .sidebar-panel.compact p:last-child {
@@ -165,37 +263,54 @@ button:disabled {
   border-top: 1px solid var(--line);
 }
 
+.stat-pair strong {
+  color: var(--ink);
+}
+
 main {
-  padding: 28px;
   min-width: 0;
+  padding: 28px;
 }
 
 .hero-band {
-  min-height: 270px;
+  min-height: 320px;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 260px;
-  gap: 28px;
+  gap: 32px;
   align-items: center;
-  margin-bottom: 24px;
-  padding: 34px;
+  margin-bottom: 26px;
+  padding: clamp(24px, 5vw, 46px);
   color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.72);
   border-radius: 0;
   background:
-    linear-gradient(90deg, rgba(23, 32, 51, 0.92), rgba(23, 32, 51, 0.62)),
+    linear-gradient(100deg, rgba(23, 32, 51, 0.92), rgba(23, 32, 51, 0.62) 58%, rgba(23, 32, 51, 0.24)),
+    radial-gradient(circle at 72% 26%, rgba(255, 209, 102, 0.22), transparent 17rem),
     url("https://images.unsplash.com/photo-1613771404721-1f92d799e49f?auto=format&fit=crop&w=1600&q=80") center/cover;
   box-shadow: var(--shadow);
+  overflow: hidden;
+  position: relative;
+}
+
+.hero-band::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.72), transparent);
 }
 
 .hero-band h1 {
   margin: 0;
-  max-width: 800px;
-  font-size: clamp(2.1rem, 5vw, 4.5rem);
+  max-width: 860px;
+  font-size: clamp(2.3rem, 5vw, 4.7rem);
   line-height: 0.98;
   letter-spacing: 0;
+  text-wrap: balance;
 }
 
 .hero-band .eyebrow {
-  color: rgba(255, 255, 255, 0.76);
+  color: rgba(255, 255, 255, 0.78);
 }
 
 .mini-card {
@@ -208,9 +323,9 @@ main {
   border: 7px solid #f3cf5a;
   border-radius: 8px;
   background: linear-gradient(150deg, #f98548, #fff3d0 58%, #ffffff);
-  color: var(--ink);
+  color: var(--card-ink);
   transform: rotate(4deg);
-  box-shadow: 0 22px 46px rgba(0, 0, 0, 0.28);
+  box-shadow: 0 26px 58px rgba(23, 32, 51, 0.24);
   animation: floatCard 4s ease-in-out infinite;
 }
 
@@ -252,6 +367,16 @@ main {
 .toolbar {
   flex-wrap: wrap;
   align-items: center;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.84);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(14px);
+}
+
+.section-heading h2 {
+  color: var(--ink);
 }
 
 .search-box,
@@ -274,9 +399,25 @@ select {
   min-height: 44px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: var(--panel);
+  background: rgba(255, 255, 255, 0.92);
   color: var(--ink);
   padding: 0 12px;
+  transition: border-color var(--ease), background var(--ease), box-shadow var(--ease);
+}
+
+input:hover,
+select:hover {
+  border-color: var(--line-strong);
+  background: #ffffff;
+}
+
+input::placeholder {
+  color: rgba(101, 113, 136, 0.72);
+}
+
+select option {
+  background: #ffffff;
+  color: var(--ink);
 }
 
 .icon-button {
@@ -289,10 +430,98 @@ select {
   grid-column: 1 / -1;
   padding: 44px;
   text-align: center;
-  border: 1px dashed #b9c5d6;
-  background: rgba(255, 255, 255, 0.7);
+  border: 1px dashed rgba(101, 113, 136, 0.38);
+  background: rgba(255, 255, 255, 0.72);
   border-radius: var(--radius);
   color: var(--muted);
+}
+
+dialog {
+  color: var(--ink);
+}
+
+.detail-dialog {
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  box-shadow: var(--shadow);
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.detail-dialog::backdrop {
+  background:
+    radial-gradient(circle at 50% 18%, rgba(22, 119, 255, 0.18), transparent 22rem),
+    rgba(23, 32, 51, 0.45);
+  backdrop-filter: blur(10px);
+}
+
+.detail-sheet {
+  background: rgba(255, 255, 255, 0.96);
+  color: var(--ink);
+}
+
+.detail-body p {
+  color: var(--muted);
+}
+
+.stat-card {
+  background: rgba(247, 249, 253, 0.78);
+  border-color: var(--line);
+}
+
+.meter {
+  background: rgba(23, 32, 51, 0.08);
+}
+
+.pokemon-card,
+.battle-card {
+  color: var(--card-ink);
+}
+
+.pokemon-card {
+  border-color: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 18px 42px rgba(23, 32, 51, 0.13);
+}
+
+.pokemon-card:hover {
+  box-shadow: 0 28px 64px rgba(23, 32, 51, 0.20);
+}
+
+.player-zone,
+.battle-center,
+.hand-panel {
+  border-color: var(--line);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(247, 249, 253, 0.92));
+  box-shadow: var(--shadow-soft);
+}
+
+.zone-header,
+.battle-card small {
+  color: var(--muted);
+}
+
+.zone-header strong {
+  color: var(--ink);
+}
+
+.active-slot {
+  border-color: rgba(101, 113, 136, 0.36);
+  background: rgba(247, 249, 253, 0.58);
+}
+
+.battle-log p {
+  background: rgba(255, 255, 255, 0.82);
+  color: #344054;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 @media (max-width: 980px) {
@@ -319,7 +548,13 @@ select {
     grid-template-columns: repeat(3, 1fr);
   }
 
-  .hero-band {
+  .nav-link {
+    justify-content: center;
+  }
+
+  .hero-band,
+  .battle-layout,
+  .detail-sheet {
     grid-template-columns: 1fr;
   }
 
@@ -334,14 +569,37 @@ select {
   }
 
   .hero-band {
-    min-height: 340px;
+    min-height: 360px;
     padding: 22px;
     align-items: end;
+  }
+
+  .hero-band h1 {
+    font-size: clamp(2rem, 13vw, 3.2rem);
   }
 
   .toolbar,
   .section-heading {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .search-box,
+  .select-box {
+    width: 100%;
+  }
+
+  input,
+  select,
+  button {
+    width: 100%;
+  }
+
+  .icon-button {
+    width: 100%;
+  }
+
+  .detail-dialog {
+    width: calc(100vw - 18px);
   }
 }

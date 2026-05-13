@@ -170,31 +170,12 @@
       line-height: 1.7;
     }
 
-    .arena-stats {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(112px, 1fr));
-      gap: 12px;
-      margin-bottom: 22px;
-    }
-
-    .stat-card, .arena-panel {
+    .arena-panel {
       border: 1px solid var(--line);
       border-radius: 24px;
       background: var(--surface);
       box-shadow: var(--soft-shadow);
       backdrop-filter: blur(18px);
-    }
-
-    .stat-card { padding: 16px; }
-    .stat-card strong { display: block; font-size: clamp(1.5rem, 3vw, 2.35rem); line-height: 1; }
-    .stat-card span {
-      display: block;
-      margin-top: 8px;
-      color: var(--muted);
-      font-size: 0.72rem;
-      font-weight: 900;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
     }
 
     .battle-shell {
@@ -263,6 +244,10 @@
       padding: clamp(14px, 2.2vw, 24px);
     }
 
+    .arena-panel.impact {
+      animation: arenaImpact 260ms ease;
+    }
+
     .arena-panel::after {
       content: "";
       position: absolute;
@@ -307,29 +292,6 @@
       animation: winnerGrand 1500ms ease-in-out infinite alternate, winnerPop 620ms cubic-bezier(.2, .9, .2, 1) both;
     }
 
-    .winner-banner.win::before,
-    .winner-banner.loss::before {
-      content: "";
-      position: absolute;
-      inset: -140%;
-      z-index: -1;
-      background:
-        conic-gradient(from 0deg, transparent, rgba(246,205,106,0.5), transparent, rgba(105,215,255,0.45), transparent);
-      animation: victorySpin 2800ms linear infinite;
-      opacity: 0.7;
-    }
-
-    .winner-banner.win::after,
-    .winner-banner.loss::after {
-      content: "";
-      position: absolute;
-      inset: -18px;
-      z-index: -2;
-      border-radius: 28px;
-      background: radial-gradient(circle, rgba(255,255,255,0.22), transparent 64%);
-      animation: victoryPulse 1100ms ease-out infinite;
-    }
-
     @keyframes winnerGrand {
       from { filter: brightness(1) saturate(1); transform: translateY(0) scale(1); }
       to { filter: brightness(1.35) saturate(1.3); transform: translateY(-2px) scale(1.018); }
@@ -341,13 +303,10 @@
       to { opacity: 1; transform: scale(1); }
     }
 
-    @keyframes victorySpin {
-      to { transform: rotate(1turn); }
-    }
-
-    @keyframes victoryPulse {
-      from { opacity: 0.55; transform: scale(0.96); }
-      to { opacity: 0; transform: scale(1.18); }
+    @keyframes arenaImpact {
+      20% { transform: translateX(-5px); filter: brightness(1.15); }
+      48% { transform: translateX(5px); }
+      100% { transform: translateX(0); filter: brightness(1); }
     }
 
     .arena-board {
@@ -384,6 +343,10 @@
       margin-bottom: 14px;
     }
 
+    .health-shell.hit {
+      animation: healthHit 360ms ease;
+    }
+
     .health-bar {
       display: block;
       width: 0%;
@@ -394,6 +357,11 @@
     }
 
     .health-bar.low { background: linear-gradient(90deg, var(--danger), #f6cd6a); }
+
+    @keyframes healthHit {
+      35% { box-shadow: 0 0 0 5px rgba(255, 109, 143, 0.18), 0 0 28px rgba(255, 109, 143, 0.28); }
+      100% { box-shadow: none; }
+    }
 
     .battle-card {
       --type: #69d7ff;
@@ -429,6 +397,7 @@
     .battle-card:hover { transform: translateY(-5px); box-shadow: 0 32px 86px color-mix(in srgb, var(--type) 18%, rgba(0,0,0,0.38)); }
 
     .battle-card.shake { animation: attackShake 300ms ease; }
+    .battle-card.hit { animation: cardHit 430ms ease; }
 
     @keyframes cardEnter {
       from { opacity: 0; transform: translateY(16px) scale(0.98); }
@@ -440,6 +409,12 @@
       45% { transform: translateX(8px) rotate(1deg); }
       70% { transform: translateX(-5px); }
       100% { transform: translateX(0); }
+    }
+
+    @keyframes cardHit {
+      18% { transform: translateY(8px) scale(0.985); filter: brightness(1.35) saturate(1.35); }
+      42% { transform: translateY(-4px) scale(1.01); }
+      100% { transform: translateY(0) scale(1); filter: brightness(1) saturate(1); }
     }
 
     .card-head {
@@ -584,6 +559,65 @@
       to { opacity: 0; transform: translateY(-28px) scale(1.05); }
     }
 
+    .winner-popup {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: rgba(5, 7, 12, 0.74);
+      backdrop-filter: blur(10px);
+      opacity: 1;
+      pointer-events: auto;
+      transition: opacity 220ms ease;
+    }
+
+    .winner-popup.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .winner-popup-card {
+      width: min(520px, 100%);
+      border: 1px solid rgba(246, 205, 106, 0.48);
+      border-radius: 28px;
+      padding: clamp(26px, 5vw, 44px);
+      text-align: center;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(255,255,255,0.16), transparent 15rem),
+        linear-gradient(145deg, rgba(28, 34, 48, 0.98), rgba(12, 15, 24, 0.98));
+      box-shadow: 0 34px 110px rgba(0,0,0,0.55), 0 0 80px rgba(246,205,106,0.16);
+      animation: winnerModalPop 520ms cubic-bezier(.2, .9, .2, 1) both;
+    }
+
+    .winner-popup-card p {
+      margin: 0 0 10px;
+      color: var(--gold);
+      font-size: 0.78rem;
+      font-weight: 950;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .winner-popup-card h2 {
+      margin: 0;
+      font-size: clamp(2.6rem, 8vw, 4.8rem);
+      line-height: 0.92;
+    }
+
+    .winner-popup-card strong {
+      display: block;
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    @keyframes winnerModalPop {
+      from { opacity: 0; transform: translateY(18px) scale(0.9); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
     .grass { --type: #64d96f; }
     .poison { --type: #b56bdb; }
     .fire { --type: #ff784f; }
@@ -639,7 +673,6 @@
       .header-actions { gap: 6px; }
       .nav-link { padding: 0 10px; }
       .hero { grid-template-columns: 1fr; }
-      .arena-stats { grid-template-columns: repeat(2, 1fr); }
       .sidebar-controls { grid-template-columns: repeat(3, 56px); }
       .battle-card, .empty-slot { min-height: 500px; border-radius: 26px; }
       .stat-grid { grid-template-columns: 1fr 1fr; }
@@ -668,13 +701,6 @@
         <h1 id="pageTitle">Battle Ground</h1>
         <p class="subtitle">Draw a player card, reveal an opponent, then resolve a fast turn-based match using HP, speed, attack, defense, critical hits, and type advantage.</p>
       </div>
-    </section>
-
-    <section class="arena-stats" aria-label="Saved battle statistics">
-      <div class="stat-card"><strong id="totalBattles">0</strong><span>Total Battles</span></div>
-      <div class="stat-card"><strong id="playerWins">0</strong><span>Player Wins</span></div>
-      <div class="stat-card"><strong id="playerLosses">0</strong><span>Player Losses</span></div>
-      <div class="stat-card"><strong id="winRate">0%</strong><span>Win Rate</span></div>
     </section>
 
     <div class="battle-shell">
@@ -716,6 +742,14 @@
           </article>
         </div>
       </section>
+    </div>
+
+    <div id="winnerPopup" class="winner-popup hidden" role="dialog" aria-modal="true" aria-live="assertive" aria-labelledby="winnerPopupTitle">
+      <div class="winner-popup-card">
+        <p id="winnerPopupKicker">Victory</p>
+        <h2 id="winnerPopupTitle">Winner</h2>
+        <strong id="winnerPopupDetail">Match complete</strong>
+      </div>
     </div>
   </main>
 
@@ -801,16 +835,17 @@
       opponentHpText: document.querySelector("#opponentHpText"),
       playerMeter: document.querySelector("[aria-label='Player health']"),
       opponentMeter: document.querySelector("[aria-label='Opponent health']"),
+      arenaPanel: document.querySelector(".arena-panel"),
       winner: document.querySelector("#winnerBanner"),
+      winnerPopup: document.querySelector("#winnerPopup"),
+      winnerPopupKicker: document.querySelector("#winnerPopupKicker"),
+      winnerPopupTitle: document.querySelector("#winnerPopupTitle"),
+      winnerPopupDetail: document.querySelector("#winnerPopupDetail"),
       drawBtn: document.querySelector("#drawBtn"),
       startBtn: document.querySelector("#startBtn"),
       attackBtn: document.querySelector("#attackBtn"),
       autoBtn: document.querySelector("#autoBtn"),
-      resetBtn: document.querySelector("#resetBtn"),
-      totalBattles: document.querySelector("#totalBattles"),
-      playerWins: document.querySelector("#playerWins"),
-      playerLosses: document.querySelector("#playerLosses"),
-      winRate: document.querySelector("#winRate")
+      resetBtn: document.querySelector("#resetBtn")
     };
 
     const state = {
@@ -834,11 +869,13 @@
       document.querySelectorAll(".icon-button").forEach(control => {
         control.addEventListener("click", () => revealControlLabel(control));
       });
+      els.winnerPopup.addEventListener("click", hideWinnerPopup);
       els.drawBtn.addEventListener("click", () => {
-        state.player = drawRandomPokemon();
-        state.opponent = drawRandomPokemon(state.player.id);
-        state.playerHp = state.player.hp;
-        state.opponentHp = state.opponent.hp;
+        hideWinnerPopup();
+        state.player = prepareBattlePokemon(drawRandomPokemon());
+        state.opponent = prepareBattlePokemon(drawRandomPokemon(state.player.id));
+        state.playerHp = state.player.battleHp;
+        state.opponentHp = state.opponent.battleHp;
         state.started = false;
         state.over = false;
         state.round = 0;
@@ -868,7 +905,7 @@
         els.autoBtn.textContent = "Ⅱ";
         els.autoBtn.setAttribute("aria-label", "Pause Auto Battle");
         els.autoBtn.dataset.label = "Pause Auto";
-        state.autoTimer = setInterval(performAttackTurn, 900);
+        state.autoTimer = setInterval(performAttackTurn, 1100);
       });
       els.resetBtn.addEventListener("click", resetBattle);
     }
@@ -888,6 +925,10 @@
       return deck[Math.floor(Math.random() * deck.length)];
     }
 
+    function prepareBattlePokemon(mon) {
+      return { ...mon, battleHp: Math.round(mon.hp * 2.35) };
+    }
+
     function renderBattleCard(slot, mon) {
       const target = slot === "player" ? els.playerCard : els.opponentCard;
       target.className = "";
@@ -900,7 +941,7 @@
           <div class="card-art"><img src="${mon.image}" alt="${mon.name} official artwork" loading="lazy"></div>
           <div class="card-head">
             <h2>${mon.name}</h2>
-            <span class="hp-badge">HP ${mon.hp}</span>
+            <span class="hp-badge">HP ${mon.battleHp}</span>
           </div>
           <div class="type-row">${mon.types.map(type => `<span class="type-chip" style="--chip:${typeColors[type]}">${type}</span>`).join("")}</div>
           <p class="ability"><strong>Ability:</strong> ${mon.ability}</p>
@@ -923,8 +964,8 @@
       state.started = true;
       state.over = false;
       state.round = 0;
-      state.playerHp = state.player.hp;
-      state.opponentHp = state.opponent.hp;
+      state.playerHp = state.player.battleHp;
+      state.opponentHp = state.opponent.battleHp;
       state.active = state.player.speed >= state.opponent.speed ? "player" : "opponent";
       updateHealthBars();
       addBattleLog(`${state.active === "player" ? state.player.name : state.opponent.name} is faster and attacks first.`);
@@ -954,7 +995,14 @@
 
       showDamagePopup(defenderKey, result.damage);
       document.querySelector(`[data-card="${attackerKey}"]`)?.classList.add("shake");
+      document.querySelector(`[data-card="${defenderKey}"]`)?.classList.add("hit");
+      const meter = defenderKey === "player" ? els.playerMeter : els.opponentMeter;
+      meter.classList.add("hit");
+      els.arenaPanel.classList.add("impact");
       setTimeout(() => document.querySelector(`[data-card="${attackerKey}"]`)?.classList.remove("shake"), 320);
+      setTimeout(() => document.querySelector(`[data-card="${defenderKey}"]`)?.classList.remove("hit"), 460);
+      setTimeout(() => meter.classList.remove("hit"), 380);
+      setTimeout(() => els.arenaPanel.classList.remove("impact"), 280);
       updateHealthBars();
 
       if (state.playerHp <= 0 || state.opponentHp <= 0) {
@@ -984,14 +1032,14 @@
     }
 
     function updateHealthBars() {
-      const playerPercent = state.player ? Math.max(0, (state.playerHp / state.player.hp) * 100) : 0;
-      const opponentPercent = state.opponent ? Math.max(0, (state.opponentHp / state.opponent.hp) * 100) : 0;
+      const playerPercent = state.player ? Math.max(0, (state.playerHp / state.player.battleHp) * 100) : 0;
+      const opponentPercent = state.opponent ? Math.max(0, (state.opponentHp / state.opponent.battleHp) * 100) : 0;
       els.playerHealth.style.width = `${playerPercent}%`;
       els.opponentHealth.style.width = `${opponentPercent}%`;
       els.playerHealth.classList.toggle("low", playerPercent <= 30);
       els.opponentHealth.classList.toggle("low", opponentPercent <= 30);
-      els.playerHpText.textContent = state.player ? `HP ${state.playerHp} / ${state.player.hp}` : "HP 0 / 0";
-      els.opponentHpText.textContent = state.opponent ? `HP ${state.opponentHp} / ${state.opponent.hp}` : "HP 0 / 0";
+      els.playerHpText.textContent = state.player ? `HP ${state.playerHp} / ${state.player.battleHp}` : "HP 0 / 0";
+      els.opponentHpText.textContent = state.opponent ? `HP ${state.opponentHp} / ${state.opponent.battleHp}` : "HP 0 / 0";
       els.playerMeter.setAttribute("aria-valuenow", Math.round(playerPercent));
       els.opponentMeter.setAttribute("aria-valuenow", Math.round(opponentPercent));
     }
@@ -1033,6 +1081,7 @@
       updateBattleStatsUI();
       els.winner.className = `winner-banner ${playerWon ? "win" : "loss"}`;
       els.winner.textContent = `${winnerName} wins the match after ${state.round} rounds.`;
+      scheduleWinnerPopup(playerWon, winnerName);
       addBattleLog(`Winner: ${winnerName}. Match ended after ${state.round} rounds.`);
     }
 
@@ -1047,6 +1096,7 @@
       state.started = false;
       state.over = false;
       state.round = 0;
+      hideWinnerPopup();
       els.playerCard.className = "empty-slot";
       els.opponentCard.className = "empty-slot";
       els.playerCard.textContent = "Draw Player Card";
@@ -1069,11 +1119,26 @@
     }
 
     function updateBattleStatsUI() {
-      const rate = state.stats.totalBattles ? Math.round((state.stats.playerWins / state.stats.totalBattles) * 100) : 0;
-      els.totalBattles.textContent = state.stats.totalBattles;
-      els.playerWins.textContent = state.stats.playerWins;
-      els.playerLosses.textContent = state.stats.playerLosses;
-      els.winRate.textContent = `${rate}%`;
+      saveBattleStats();
+    }
+
+    function scheduleWinnerPopup(playerWon, winnerName) {
+      clearTimeout(state.popupTimer);
+      state.popupTimer = setTimeout(() => {
+        showWinnerPopup(playerWon, winnerName);
+      }, 5000);
+    }
+
+    function showWinnerPopup(playerWon, winnerName) {
+      els.winnerPopupKicker.textContent = "Victory";
+      els.winnerPopupTitle.textContent = playerWon ? "Player Wins" : "Opponent Wins";
+      els.winnerPopupDetail.textContent = `${winnerName} won after ${state.round} rounds`;
+      els.winnerPopup.classList.remove("hidden");
+    }
+
+    function hideWinnerPopup() {
+      els.winnerPopup.classList.add("hidden");
+      clearTimeout(state.popupTimer);
     }
 
     initBattle();

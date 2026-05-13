@@ -444,6 +444,8 @@ dialog {
   border: 1px solid rgba(255, 255, 255, 0.78);
   box-shadow: var(--shadow);
   background: rgba(255, 255, 255, 0.82);
+  opacity: 0;
+  transform: translateY(14px) scale(0.98);
 }
 
 .detail-dialog::backdrop {
@@ -453,6 +455,22 @@ dialog {
   backdrop-filter: blur(10px);
 }
 
+.detail-dialog[open] {
+  animation: modalIn 180ms ease forwards;
+}
+
+.detail-dialog[open]::backdrop {
+  animation: backdropIn 180ms ease forwards;
+}
+
+.detail-dialog.closing {
+  animation: modalOut 160ms ease forwards;
+}
+
+.detail-dialog.closing::backdrop {
+  animation: backdropOut 160ms ease forwards;
+}
+
 .detail-sheet {
   background: rgba(255, 255, 255, 0.96);
   color: var(--ink);
@@ -460,6 +478,11 @@ dialog {
 
 .detail-body p {
   color: var(--muted);
+}
+
+.detail-description {
+  margin: 18px 0 0;
+  line-height: 1.65;
 }
 
 .stat-card {
@@ -511,6 +534,45 @@ dialog {
 .battle-log p {
   background: rgba(255, 255, 255, 0.82);
   color: #344054;
+}
+
+@keyframes modalIn {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes modalOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+}
+
+@keyframes backdropIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes backdropOut {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

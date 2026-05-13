@@ -1,186 +1,116 @@
-import { pokemon } from "./pokemon-data.js";
+const typeClass = type => `type-${type.toLowerCase()}`;
 
-function titleCase(value) {
-  return value.replace(/\b\w/g, char => char.toUpperCase());
+function formatId(id) {
+  return `#${String(id).padStart(3, "0")}`;
 }
 
-function cardTemplate(mon, savedCards) {
-  const saved = savedCards.has(mon.id);
+function createTypeBadges(types) {
+  return types.map(type => `<span class="pill type-badge ${typeClass(type)}">${type}</span>`).join("");
+}
+
+function createStatItem(label, value) {
   return `
-    <article class="pokemon-card" style="--card-bg: ${mon.cardBg}" data-id="${mon.id}" tabindex="0">
+    <div class="stat-card">
+      <span>${label}</span>
+      <strong>${value}</strong>
+    </div>
+  `;
+}
+
+function createPokemonCard(pokemon) {
+  const primaryType = pokemon.types[0];
+
+  return `
+    <article class="pokemon-card ${typeClass(primaryType)}" style="--card-bg: ${pokemon.cardBg}" data-id="${pokemon.id}">
       <div class="card-top">
-        <span class="dex-no">#${String(mon.id).padStart(3, "0")}</span>
-        <span class="hp">HP ${mon.hp}</span>
+        <span class="dex-no">${formatId(pokemon.id)}</span>
+        <span class="hp">HP ${pokemon.hp}</span>
       </div>
-      <h3>${mon.name}</h3>
-      <div class="type-row">${mon.types.map(type => `<span class="pill">${type}</span>`).join("")}</div>
-      <div class="art-frame"><img src="${mon.image}" alt="${mon.name} artwork" loading="lazy"></div>
-      ${mon.attacks.map(attack => `
-        <div class="attack-line">
-          <strong>${attack.name}</strong>
-          <span>${"●".repeat(attack.cost)} ${attack.damage}</span>
+
+      <div class="art-frame">
+        <img src="${pokemon.image}" alt="${pokemon.name} official artwork" loading="lazy">
+      </div>
+
+      <h3>${pokemon.name}</h3>
+      <div class="type-row">${createTypeBadges(pokemon.types)}</div>
+
+      <div class="stat-grid card-stat-grid">
+        <div class="stat-card">
+          <span>Attack</span>
+          <strong>${pokemon.attack}</strong>
         </div>
-      `).join("")}
-      <div class="card-footer">
-        <span class="pill">${mon.rarity}</span>
-        <span class="pill">Weak: ${mon.weakness}</span>
+        <div class="stat-card">
+          <span>Defense</span>
+          <strong>${pokemon.defense}</strong>
+        </div>
+        <div class="stat-card">
+          <span>Speed</span>
+          <strong>${pokemon.speed}</strong>
+        </div>
+        <div class="stat-card">
+          <span>Rarity</span>
+          <strong>${pokemon.rarity}</strong>
+        </div>
       </div>
-      <button class="favorite-button ${saved ? "saved" : ""}" type="button" data-save="${mon.id}" aria-label="Save ${mon.name}">${saved ? "★" : "☆"}</button>
+
+      <div class="card-actions">
+        <button class="favorite-button" type="button" aria-label="Favorite ${pokemon.name}" data-favorite="${pokemon.id}">☆</button>
+        <button class="view-details-button" type="button" data-details="${pokemon.id}">View Details</button>
+      </div>
     </article>
   `;
 }
 
-function filteredPokemon(state) {
-  const query = state.query.trim().toLowerCase();
-  const list = pokemon.filter(mon => {
-    const text = `${mon.name} ${mon.id} ${mon.types.join(" ")}`.toLowerCase();
-    return (!query || text.includes(query)) && (state.type === "All" || mon.types.includes(state.type));
-  });
+export function renderPokemonCards(pokemonList, gridContainer) {
+  if (!gridContainer) return;
 
-  return list.sort((a, b) => {
-    if (state.sort === "name") return a.name.localeCompare(b.name);
-    if (state.sort === "hp") return b.hp - a.hp;
-    if (state.sort === "attack") return b.attack - a.attack;
-    if (state.sort === "speed") return b.speed - a.speed;
-    return a.id - b.id;
-  });
+  gridContainer.innerHTML = pokemonList.length
+    ? pokemonList.map(createPokemonCard).join("")
+    : `<div class="empty-state">No Pokemon match your current search and filters.</div>`;
 }
 
-export function createUiController(state, els) {
-  function renderDex() {
-    const list = filteredPokemon(state);
-    els.grid.innerHTML = list.length
-      ? list.map(mon => cardTemplate(mon, state.saved)).join("")
-      : `<div class="empty-state">No cards match that search.</div>`;
-    renderStats();
-  }
+export function renderTypeFilter(typeFilter, pokemonList) {
+  if (!typeFilter) return;
 
-  function renderSaved() {
-    const list = pokemon.filter(mon => state.saved.has(mon.id));
-    els.savedGrid.innerHTML = list.length
-      ? list.map(mon => cardTemplate(mon, state.saved)).join("")
-      : `<div class="empty-state">Saved cards will appear here.</div>`;
-  }
+  const types = [...new Set(pokemonList.flatMap(pokemon => pokemon.types))].sort();
+  typeFilter.innerHTML = [
+    `<option value="all">All Types</option>`,
+    ...types.map(type => `<option value="${type}">${type}</option>`)
+  ].join("");
+}
 
-  function renderStats() {
-    els.cardCount.textContent = pokemon.length;
-    els.savedCount.textContent = state.saved.size;
-    const selected = state.saved.size ? pokemon.filter(mon => state.saved.has(mon.id)) : pokemon.slice(0, 12);
-    const power = Math.round(selected.reduce((sum, mon) => sum + mon.hp + mon.attack + mon.defense + mon.speed, 0) / selected.length);
-    els.deckPower.textContent = Number.isFinite(power) ? power : 0;
-  }
+export function updateVisibleCount(countElement, count) {
+  if (!countElement) return;
+  countElement.textContent = count;
+}
 
-  function openDetail(id) {
-    const mon = pokemon.find(item => item.id === Number(id));
-    if (!mon) return;
-    els.detail.innerHTML = `
-      <div class="detail-sheet">
-        <div class="detail-art" style="--card-bg: ${mon.cardBg}">
-          <img src="${mon.image}" alt="${mon.name} artwork">
-        </div>
-        <div class="detail-body">
-          <p class="eyebrow">#${String(mon.id).padStart(3, "0")} · ${mon.rarity}</p>
-          <h2>${mon.name}</h2>
-          <div class="type-row">${mon.types.map(type => `<span class="pill">${type}</span>`).join("")}</div>
-          <div class="stat-grid">
-            ${["hp", "attack", "defense", "speed"].map(stat => `
-              <div class="stat-card">
-                <span>${titleCase(stat)}</span>
-                <strong>${mon[stat]}</strong>
-                <div class="meter" style="--value: ${Math.min(100, mon[stat])}%"><i></i></div>
-              </div>
-            `).join("")}
-          </div>
-          ${mon.attacks.map(attack => `
-            <div class="attack-line">
-              <strong>${attack.name}</strong>
-              <span>${attack.cost} Energy · ${attack.damage} Damage</span>
-            </div>
-          `).join("")}
-          <p>Weakness: <strong>${mon.weakness}</strong> · Retreat cost: <strong>${mon.retreat}</strong></p>
-          <button class="primary-button" type="button" data-save="${mon.id}">${state.saved.has(mon.id) ? "Remove from Saved" : "Save Card"}</button>
-        </div>
+export function renderPokemonDetailModal(pokemon, modalContent) {
+  if (!pokemon || !modalContent) return;
+
+  modalContent.innerHTML = `
+    <div class="detail-sheet" style="--card-bg: ${pokemon.cardBg}">
+      <div class="detail-art">
+        <img src="${pokemon.image}" alt="${pokemon.name} official artwork">
       </div>
-    `;
-    if (!els.dialog.open) els.dialog.showModal();
-  }
 
-  function toggleSaved(id) {
-    const numberId = Number(id);
-    if (state.saved.has(numberId)) state.saved.delete(numberId);
-    else state.saved.add(numberId);
-    localStorage.setItem("savedPokemon", JSON.stringify([...state.saved]));
-    renderDex();
-    renderSaved();
-    renderStats();
-    if (els.dialog.open) openDetail(numberId);
-  }
+      <div class="detail-body">
+        <p class="eyebrow">${formatId(pokemon.id)} · ${pokemon.rarity}</p>
+        <h2>${pokemon.name}</h2>
+        <div class="type-row">${createTypeBadges(pokemon.types)}</div>
 
-  function setupFilters() {
-    const types = ["All", ...new Set(pokemon.flatMap(mon => mon.types))].sort((a, b) => a === "All" ? -1 : b === "All" ? 1 : a.localeCompare(b));
-    els.typeFilter.innerHTML = types.map(type => `<option value="${type}">${type}</option>`).join("");
-    els.search.addEventListener("input", event => {
-      state.query = event.target.value;
-      renderDex();
-    });
-    els.typeFilter.addEventListener("change", event => {
-      state.type = event.target.value;
-      renderDex();
-    });
-    els.sortFilter.addEventListener("change", event => {
-      state.sort = event.target.value;
-      renderDex();
-    });
-  }
+        <div class="stat-grid">
+          ${createStatItem("HP", pokemon.hp)}
+          ${createStatItem("Attack", pokemon.attack)}
+          ${createStatItem("Defense", pokemon.defense)}
+          ${createStatItem("Speed", pokemon.speed)}
+          ${createStatItem("Ability", pokemon.ability)}
+          ${createStatItem("Weakness", pokemon.weakness)}
+          ${createStatItem("Evolution", pokemon.evolutionStage)}
+          ${createStatItem("Rarity", pokemon.rarity)}
+        </div>
 
-  function setupNavigation() {
-    const links = document.querySelectorAll("[data-view-link]");
-    function activate(hash) {
-      const viewName = (hash || "#dex").replace("#", "");
-      document.querySelectorAll("[data-view]").forEach(view => view.classList.toggle("active", view.dataset.view === viewName));
-      links.forEach(link => link.classList.toggle("active", link.dataset.viewLink === viewName));
-    }
-    window.addEventListener("hashchange", () => activate(location.hash));
-    activate(location.hash);
-  }
-
-  function setupCardClicks() {
-    document.body.addEventListener("click", event => {
-      const saveButton = event.target.closest("[data-save]");
-      if (saveButton) {
-        event.stopPropagation();
-        toggleSaved(saveButton.dataset.save);
-        return;
-      }
-      const card = event.target.closest(".pokemon-card");
-      if (card) openDetail(card.dataset.id);
-    });
-    document.body.addEventListener("keydown", event => {
-      if (event.key !== "Enter") return;
-      const card = event.target.closest(".pokemon-card");
-      if (card) openDetail(card.dataset.id);
-    });
-    els.closeDialog.addEventListener("click", () => els.dialog.close());
-    els.dialog.addEventListener("click", event => {
-      if (event.target === els.dialog) els.dialog.close();
-    });
-    els.randomButton.addEventListener("click", () => openDetail(pokemon[Math.floor(Math.random() * pokemon.length)].id));
-    els.clearSaved.addEventListener("click", () => {
-      state.saved.clear();
-      localStorage.removeItem("savedPokemon");
-      renderDex();
-      renderSaved();
-      renderStats();
-    });
-  }
-
-  function init() {
-    setupFilters();
-    setupNavigation();
-    setupCardClicks();
-    renderDex();
-    renderSaved();
-  }
-
-  return { init, renderDex, renderSaved, renderStats };
+        <p class="detail-description">${pokemon.description}</p>
+      </div>
+    </div>
+  `;
 }

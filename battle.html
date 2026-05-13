@@ -73,6 +73,12 @@
       border-color: var(--line-strong);
     }
 
+    button:focus-visible,
+    a:focus-visible {
+      outline: 3px solid color-mix(in srgb, var(--accent) 76%, white);
+      outline-offset: 3px;
+    }
+
     button:disabled {
       cursor: not-allowed;
       opacity: 0.45;
@@ -862,14 +868,26 @@
       stats: { totalBattles: 0, playerWins: 0, playerLosses: 0, lastWinner: "None" }
     };
 
+    function readStorage(key, fallback) {
+      try {
+        const value = localStorage.getItem(key);
+        return value ? JSON.parse(value) : fallback;
+      } catch {
+        return fallback;
+      }
+    }
+
     function initBattle() {
-      state.stats = { ...state.stats, ...JSON.parse(localStorage.getItem("noor-battle-stats") || "{}") };
+      state.stats = { ...state.stats, ...readStorage("noor-battle-stats", {}) };
       updateBattleStatsUI();
       resetBattle();
       document.querySelectorAll(".icon-button").forEach(control => {
         control.addEventListener("click", () => revealControlLabel(control));
       });
       els.winnerPopup.addEventListener("click", hideWinnerPopup);
+      document.addEventListener("keydown", event => {
+        if (event.key === "Escape") hideWinnerPopup();
+      });
       els.drawBtn.addEventListener("click", () => {
         hideWinnerPopup();
         state.player = prepareBattlePokemon(drawRandomPokemon());
@@ -881,6 +899,10 @@
         state.round = 0;
         state.active = null;
         clearInterval(state.autoTimer);
+        state.autoTimer = null;
+        els.autoBtn.textContent = "⟳";
+        els.autoBtn.setAttribute("aria-label", "Auto Battle");
+        els.autoBtn.dataset.label = "Auto Battle";
         renderBattleCard("player", state.player);
         renderBattleCard("opponent", state.opponent);
         updateHealthBars();

@@ -84,6 +84,13 @@
 
     button:hover { transform: translateY(-1px); border-color: var(--line-strong); }
     button:active { transform: translateY(0) scale(0.98); }
+    button:focus-visible,
+    a:focus-visible,
+    input:focus-visible,
+    select:focus-visible {
+      outline: 3px solid color-mix(in srgb, var(--accent) 76%, white);
+      outline-offset: 3px;
+    }
 
     .site-header {
       position: sticky;
@@ -443,7 +450,7 @@
       top: calc(var(--header-h) + 10px);
       z-index: 20;
       display: grid;
-      grid-template-columns: repeat(3, minmax(150px, 1fr));
+      grid-template-columns: repeat(4, minmax(140px, 1fr));
       gap: 12px;
       margin-bottom: 22px;
       padding: 12px;
@@ -569,6 +576,16 @@
       font-weight: 900;
       letter-spacing: 0.05em;
       text-transform: uppercase;
+    }
+
+    button.type-chip {
+      cursor: pointer;
+      box-shadow: none;
+    }
+
+    button.type-chip:hover {
+      transform: translateY(-1px);
+      border-color: rgba(255,255,255,0.38);
     }
 
     .card-copy {
@@ -865,6 +882,10 @@
           <select id="typeFilter"></select>
         </label>
         <label class="field">
+          <span>Rarity</span>
+          <select id="rarityFilter"></select>
+        </label>
+        <label class="field">
           <span>Sort</span>
           <select id="sortSelect">
             <option value="id">Dex number</option>
@@ -995,6 +1016,7 @@
       grid: document.querySelector("#pokemonGrid"),
       search: document.querySelector("#searchInput"),
       typeFilter: document.querySelector("#typeFilter"),
+      rarityFilter: document.querySelector("#rarityFilter"),
       sort: document.querySelector("#sortSelect"),
       favoriteFilter: document.querySelector("#favoriteFilter"),
       visibleCount: document.querySelector("#visibleCount"),
@@ -1012,15 +1034,25 @@
     const state = {
       query: "",
       type: "all",
+      rarity: "all",
       sort: "id",
       view: "all",
-      favorites: new Set(JSON.parse(localStorage.getItem("noor-pokedex-favorites") || "[]"))
+      favorites: new Set(readStorage("noor-pokedex-favorites", []))
     };
+
+    function readStorage(key, fallback) {
+      try {
+        const value = localStorage.getItem(key);
+        return value ? JSON.parse(value) : fallback;
+      } catch {
+        return fallback;
+      }
+    }
 
     function formatId(id) { return `#${String(id).padStart(3, "0")}`; }
     function typeClass(type) { return type.toLowerCase(); }
     function typeChips(types) {
-      return types.map(type => `<span class="type-chip" style="--chip:${typeColors[type]}">${type}</span>`).join("");
+      return types.map(type => `<button class="type-chip" style="--chip:${typeColors[type]}" type="button" data-type-chip="${type}" aria-label="Filter by ${type} type">${type}</button>`).join("");
     }
 
     function saveFavorites() {
@@ -1034,7 +1066,7 @@
       els.favoriteCount.textContent = state.favorites.size;
       els.typeCount.textContent = typeTotal;
       els.rareCount.textContent = rareTotal;
-      const battleStats = JSON.parse(localStorage.getItem("noor-battle-stats") || "{}");
+      const battleStats = readStorage("noor-battle-stats", {});
       els.battlesPlayedCount.textContent = battleStats.totalBattles || 0;
     }
 
@@ -1043,8 +1075,9 @@
       return pokemon.filter(mon => {
         const textMatch = [mon.name, mon.rarity, mon.ability, mon.weakness, ...mon.types].join(" ").toLowerCase().includes(query);
         const typeMatch = state.type === "all" || mon.types.includes(state.type);
+        const rarityMatch = state.rarity === "all" || mon.rarity === state.rarity;
         const favoriteMatch = state.view === "all" || state.favorites.has(mon.id);
-        return textMatch && typeMatch && favoriteMatch;
+        return textMatch && typeMatch && rarityMatch && favoriteMatch;
       }).sort((a, b) => {
         if (state.sort === "name") return a.name.localeCompare(b.name);
         if (state.sort === "hp") return b.hp - a.hp;
@@ -1086,7 +1119,7 @@
           </article>`;
       }).join("") : `
         <div class="empty-state">
-          No cards match this vault view. Adjust the search, type, sort, or favorites filter.
+          No cards match this vault view. Adjust the search, type, rarity, sort, or favorites filter.
         </div>`;
       updateStats();
     }
@@ -1094,6 +1127,12 @@
     function renderTypeOptions() {
       const types = [...new Set(pokemon.flatMap(mon => mon.types))].sort();
       els.typeFilter.innerHTML = [`<option value="all">All types</option>`, ...types.map(type => `<option value="${type}">${type}</option>`)].join("");
+    }
+
+    function renderRarityOptions() {
+      const rarities = [...new Set(pokemon.map(mon => mon.rarity))]
+        .sort((a, b) => rarityRank[a] - rarityRank[b]);
+      els.rarityFilter.innerHTML = [`<option value="all">All rarities</option>`, ...rarities.map(rarity => `<option value="${rarity}">${rarity}</option>`)].join("");
     }
 
     function openDetails(id) {
@@ -1162,8 +1201,8 @@
       state.query = "";
       els.search.value = "";
       renderCards();
-      els.search.focus();
       closeSearch();
+      els.searchToggle.focus();
     });
     els.search.addEventListener("input", event => { state.query = event.target.value; renderCards(); });
     els.search.addEventListener("keydown", event => {
@@ -1177,6 +1216,7 @@
     });
     els.search.addEventListener("blur", closeSearch);
     els.typeFilter.addEventListener("change", event => { state.type = event.target.value; renderCards(); });
+    els.rarityFilter.addEventListener("change", event => { state.rarity = event.target.value; renderCards(); });
     els.sort.addEventListener("change", event => { state.sort = event.target.value; renderCards(); });
     els.favoriteFilter.addEventListener("change", event => { state.view = event.target.value; renderCards(); });
     els.heroFavoriteBtn.addEventListener("click", () => {
@@ -1188,18 +1228,36 @@
     els.themeToggle.addEventListener("click", () => applyTheme(els.body.classList.contains("light") ? "dark" : "light"));
     els.closeModal.addEventListener("click", () => els.modal.close());
     els.modal.addEventListener("click", event => { if (event.target === els.modal) els.modal.close(); });
+    els.modal.addEventListener("cancel", () => {
+      els.modalContent.innerHTML = "";
+    });
     els.grid.addEventListener("click", event => {
       const favoriteButton = event.target.closest("[data-favorite]");
       const detailButton = event.target.closest("[data-details]");
+      const typeChip = event.target.closest("[data-type-chip]");
       if (favoriteButton) toggleFavorite(Number(favoriteButton.dataset.favorite));
+      if (typeChip) {
+        state.type = typeChip.dataset.typeChip;
+        els.typeFilter.value = state.type;
+        renderCards();
+      }
       if (detailButton) openDetails(Number(detailButton.dataset.details));
     });
     els.modalContent.addEventListener("click", event => {
       const favoriteButton = event.target.closest("[data-favorite]");
+      const typeChip = event.target.closest("[data-type-chip]");
       if (favoriteButton) toggleFavorite(Number(favoriteButton.dataset.favorite));
+      if (typeChip) {
+        state.type = typeChip.dataset.typeChip;
+        els.typeFilter.value = state.type;
+        els.modal.close();
+        renderCards();
+        document.querySelector("#collection").scrollIntoView({ behavior: "smooth" });
+      }
     });
 
     renderTypeOptions();
+    renderRarityOptions();
     applyTheme(localStorage.getItem("noor-pokedex-theme") || "dark");
     renderCards();
   </script>

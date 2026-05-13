@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
+  <title>Battle Ground - Noor's Collection</title>
+  <link rel="preconnect" href="https://raw.githubusercontent.com">
+  <style>
+    :root {
+      --bg: #090b12;
+      --bg-2: #111520;
+      --surface: rgba(20, 24, 34, 0.74);
+      --surface-strong: rgba(28, 34, 48, 0.92);
+      --ink: #f6f7fb;
+      --muted: #a8b0c2;
+      --line: rgba(255, 255, 255, 0.12);
+      --line-strong: rgba(255, 255, 255, 0.22);
+      --gold: #f6cd6a;
+      --accent: #69d7ff;
+      --danger: #ff6d8f;
+      --success: #71e8a6;
+      --shadow: 0 28px 90px rgba(0, 0, 0, 0.42);
+      --soft-shadow: 0 18px 44px rgba(0, 0, 0, 0.25);
+      --header-h: 76px;
+      --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: var(--font);
+      background:
+        radial-gradient(circle at 16% -8%, rgba(105, 215, 255, 0.22), transparent 28rem),
+        radial-gradient(circle at 86% 6%, rgba(246, 205, 106, 0.16), transparent 26rem),
+        linear-gradient(145deg, var(--bg), var(--bg-2));
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      opacity: 0.45;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+      background-size: 72px 72px;
+      mask-image: linear-gradient(to bottom, black, transparent 72%);
+    }
+
+    button, a { font: inherit; }
+
+    button, .nav-link, .button-link {
+      min-height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.07);
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: 900;
+      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease, opacity 180ms ease;
+    }
+
+    button:hover:not(:disabled), .nav-link:hover, .button-link:hover {
+      transform: translateY(-1px);
+      border-color: var(--line-strong);
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.45;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      min-height: var(--header-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 14px clamp(16px, 4vw, 46px);
+      border-bottom: 1px solid var(--line);
+      background: color-mix(in srgb, var(--surface-strong) 78%, transparent);
+      backdrop-filter: blur(22px) saturate(145%);
+    }
+
+    .brand, .header-actions, .nav-link, .button-link {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .brand {
+      min-width: 0;
+      gap: 12px;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      width: 46px;
+      height: 46px;
+      flex: 0 0 auto;
+      border: 1px solid rgba(246, 205, 106, 0.5);
+      border-radius: 16px;
+      background:
+        radial-gradient(circle at 52% 52%, #fff 0 10%, transparent 11%),
+        linear-gradient(#f15f65 0 46%, #202634 46% 54%, #f6f7fb 54%);
+      box-shadow: inset 0 0 18px rgba(255, 255, 255, 0.2), 0 12px 30px rgba(0,0,0,0.18);
+    }
+
+    .brand strong, .brand span { display: block; }
+    .brand span { color: var(--muted); font-size: 0.78rem; font-weight: 750; }
+    .header-actions { gap: 10px; }
+    .nav-link, .button-link { justify-content: center; padding: 0 14px; color: var(--muted); }
+
+    .battle-nav, .primary-btn {
+      color: #10131b;
+      background: linear-gradient(135deg, #f6cd6a, #69d7ff);
+      border-color: rgba(255,255,255,0.18);
+      box-shadow: 0 18px 42px rgba(105, 215, 255, 0.16);
+    }
+
+    main {
+      width: min(1480px, 100%);
+      margin: 0 auto;
+      padding: 30px clamp(14px, 3vw, 38px) 48px;
+      animation: pageIn 420ms ease both;
+    }
+
+    @keyframes pageIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero {
+      margin-bottom: 22px;
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--gold);
+      font-size: 0.78rem;
+      font-weight: 900;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(3rem, 7vw, 6.6rem);
+      line-height: 0.9;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      max-width: 720px;
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+
+    .arena-stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(112px, 1fr));
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .stat-card, .arena-panel {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: var(--surface);
+      box-shadow: var(--soft-shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .stat-card { padding: 16px; }
+    .stat-card strong { display: block; font-size: clamp(1.5rem, 3vw, 2.35rem); line-height: 1; }
+    .stat-card span {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .battle-shell {
+      display: grid;
+      grid-template-columns: 78px minmax(0, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .sidebar-controls {
+      position: sticky;
+      top: calc(var(--header-h) + 18px);
+      display: grid;
+      gap: 10px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 10px;
+      background: var(--surface);
+      box-shadow: var(--soft-shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .icon-button {
+      position: relative;
+      width: 56px;
+      min-height: 56px;
+      display: grid;
+      place-items: center;
+      border-radius: 18px;
+      font-size: 1.28rem;
+      line-height: 1;
+    }
+
+    .icon-button::after {
+      content: attr(data-label);
+      position: absolute;
+      left: calc(100% + 10px);
+      top: 50%;
+      z-index: 20;
+      min-width: max-content;
+      transform: translate(-6px, -50%);
+      opacity: 0;
+      pointer-events: none;
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      padding: 8px 11px;
+      color: var(--ink);
+      background: rgba(15, 18, 26, 0.94);
+      box-shadow: 0 16px 36px rgba(0,0,0,0.28);
+      font-size: 0.75rem;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      transition: opacity 160ms ease, transform 160ms ease;
+    }
+
+    .icon-button:focus-visible::after,
+    .icon-button.reveal::after {
+      opacity: 1;
+      transform: translate(0, -50%);
+    }
+
+    .arena-panel {
+      position: relative;
+      overflow: hidden;
+      padding: clamp(14px, 2.2vw, 24px);
+    }
+
+    .arena-panel::after {
+      content: "";
+      position: absolute;
+      inset: auto -10% -42% -10%;
+      height: 50%;
+      pointer-events: none;
+      background: radial-gradient(ellipse at center, rgba(105, 215, 255, 0.12), transparent 62%);
+    }
+
+    .winner-banner {
+      position: relative;
+      z-index: 2;
+      min-height: 54px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 18px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      color: var(--muted);
+      background: rgba(255,255,255,0.06);
+      text-align: center;
+      font-weight: 950;
+    }
+
+    .winner-banner.win {
+      color: var(--success);
+      border-color: rgba(113, 232, 166, 0.42);
+      background:
+        radial-gradient(circle at 50% 50%, rgba(113, 232, 166, 0.22), transparent 56%),
+        linear-gradient(135deg, rgba(113, 232, 166, 0.16), rgba(105, 215, 255, 0.12));
+      box-shadow: 0 0 44px rgba(113, 232, 166, 0.24), 0 0 120px rgba(105, 215, 255, 0.16);
+      animation: winnerGrand 1500ms ease-in-out infinite alternate, winnerPop 620ms cubic-bezier(.2, .9, .2, 1) both;
+    }
+
+    .winner-banner.loss {
+      color: var(--danger);
+      border-color: rgba(255, 109, 143, 0.42);
+      background:
+        radial-gradient(circle at 50% 50%, rgba(255, 109, 143, 0.22), transparent 56%),
+        linear-gradient(135deg, rgba(255, 109, 143, 0.16), rgba(246, 205, 106, 0.12));
+      box-shadow: 0 0 44px rgba(255, 109, 143, 0.24), 0 0 120px rgba(246, 205, 106, 0.16);
+      animation: winnerGrand 1500ms ease-in-out infinite alternate, winnerPop 620ms cubic-bezier(.2, .9, .2, 1) both;
+    }
+
+    .winner-banner.win::before,
+    .winner-banner.loss::before {
+      content: "";
+      position: absolute;
+      inset: -140%;
+      z-index: -1;
+      background:
+        conic-gradient(from 0deg, transparent, rgba(246,205,106,0.5), transparent, rgba(105,215,255,0.45), transparent);
+      animation: victorySpin 2800ms linear infinite;
+      opacity: 0.7;
+    }
+
+    .winner-banner.win::after,
+    .winner-banner.loss::after {
+      content: "";
+      position: absolute;
+      inset: -18px;
+      z-index: -2;
+      border-radius: 28px;
+      background: radial-gradient(circle, rgba(255,255,255,0.22), transparent 64%);
+      animation: victoryPulse 1100ms ease-out infinite;
+    }
+
+    @keyframes winnerGrand {
+      from { filter: brightness(1) saturate(1); transform: translateY(0) scale(1); }
+      to { filter: brightness(1.35) saturate(1.3); transform: translateY(-2px) scale(1.018); }
+    }
+
+    @keyframes winnerPop {
+      from { opacity: 0; transform: scale(0.86); }
+      70% { opacity: 1; transform: scale(1.04); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes victorySpin {
+      to { transform: rotate(1turn); }
+    }
+
+    @keyframes victoryPulse {
+      from { opacity: 0.55; transform: scale(0.96); }
+      to { opacity: 0; transform: scale(1.18); }
+    }
+
+    .arena-board {
+      display: grid;
+      grid-template-columns: minmax(280px, 1fr) auto minmax(280px, 1fr);
+      align-items: center;
+      gap: clamp(14px, 2vw, 24px);
+    }
+
+    .fighter-zone {
+      position: relative;
+      min-width: 0;
+    }
+
+    .zone-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+      color: var(--muted);
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.74rem;
+    }
+
+    .health-shell {
+      height: 13px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      margin-bottom: 14px;
+    }
+
+    .health-bar {
+      display: block;
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--success), #f6cd6a);
+      transition: width 420ms ease;
+    }
+
+    .health-bar.low { background: linear-gradient(90deg, var(--danger), #f6cd6a); }
+
+    .battle-card {
+      --type: #69d7ff;
+      position: relative;
+      isolation: isolate;
+      min-height: 560px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid color-mix(in srgb, var(--type) 38%, var(--line));
+      border-radius: 30px;
+      padding: 18px;
+      background:
+        radial-gradient(circle at 50% 22%, color-mix(in srgb, var(--type) 32%, transparent), transparent 13rem),
+        linear-gradient(180deg, rgba(255,255,255,0.1), rgba(255,255,255,0.025)),
+        var(--surface-strong);
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.03), 0 24px 70px rgba(0,0,0,0.28);
+      animation: cardEnter 360ms ease both;
+      transition: transform 200ms ease, box-shadow 200ms ease;
+    }
+
+    .battle-card::before {
+      content: "";
+      position: absolute;
+      inset: -45%;
+      z-index: -1;
+      background: linear-gradient(115deg, transparent 38%, rgba(255,255,255,0.32), transparent 58%);
+      transform: translateX(-35%) rotate(8deg);
+      transition: transform 550ms ease;
+    }
+
+    .battle-card:hover::before { transform: translateX(35%) rotate(8deg); }
+    .battle-card:hover { transform: translateY(-5px); box-shadow: 0 32px 86px color-mix(in srgb, var(--type) 18%, rgba(0,0,0,0.38)); }
+
+    .battle-card.shake { animation: attackShake 300ms ease; }
+
+    @keyframes cardEnter {
+      from { opacity: 0; transform: translateY(16px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes attackShake {
+      20% { transform: translateX(-8px) rotate(-1deg); }
+      45% { transform: translateX(8px) rotate(1deg); }
+      70% { transform: translateX(-5px); }
+      100% { transform: translateX(0); }
+    }
+
+    .card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .dex-no, .rarity-badge, .hp-badge {
+      min-height: 34px;
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 999px;
+      padding: 0 11px;
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.9);
+      font-size: 0.76rem;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .card-art {
+      flex: 1;
+      min-height: 230px;
+      display: grid;
+      place-items: center;
+      margin: 12px 0 4px;
+      border-radius: 24px;
+      background: radial-gradient(circle at 50% 52%, rgba(255,255,255,0.15), transparent 44%);
+    }
+
+    .card-art img {
+      width: min(78%, 250px);
+      max-height: 250px;
+      object-fit: contain;
+      filter: drop-shadow(0 22px 24px rgba(0,0,0,0.34));
+    }
+
+    .battle-card h2 {
+      margin: 10px 0 9px;
+      font-size: clamp(1.8rem, 3vw, 2.25rem);
+      line-height: 1;
+    }
+
+    .type-row { display: flex; flex-wrap: wrap; gap: 7px; }
+
+    .type-chip {
+      min-height: 30px;
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid rgba(255,255,255,0.16);
+      border-radius: 999px;
+      padding: 0 10px;
+      color: #fff;
+      background: color-mix(in srgb, var(--chip) 72%, #202432);
+      font-size: 0.76rem;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .ability {
+      min-height: 48px;
+      margin: 12px 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: auto;
+    }
+
+    .mini-stat {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 9px 8px;
+      background: rgba(255,255,255,0.07);
+    }
+
+    .mini-stat span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.68rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .mini-stat strong { display: block; margin-top: 3px; }
+
+    .empty-slot {
+      min-height: 560px;
+      display: grid;
+      place-items: center;
+      border: 1px dashed var(--line-strong);
+      border-radius: 30px;
+      color: var(--muted);
+      background: rgba(255,255,255,0.045);
+      text-align: center;
+      padding: 24px;
+      font-weight: 900;
+    }
+
+    .vs-badge {
+      width: clamp(62px, 8vw, 92px);
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(246, 205, 106, 0.46);
+      border-radius: 50%;
+      color: #10131b;
+      background: linear-gradient(135deg, #f6cd6a, #69d7ff);
+      font-weight: 1000;
+      font-size: clamp(1.1rem, 2vw, 1.55rem);
+      box-shadow: 0 0 48px rgba(246, 205, 106, 0.18);
+    }
+
+    .damage-popup {
+      position: absolute;
+      top: 96px;
+      right: 28px;
+      z-index: 5;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 999px;
+      padding: 8px 12px;
+      background: rgba(255, 109, 143, 0.9);
+      box-shadow: 0 16px 34px rgba(255, 109, 143, 0.25);
+      font-weight: 1000;
+      animation: damageFloat 820ms ease forwards;
+    }
+
+    @keyframes damageFloat {
+      from { opacity: 0; transform: translateY(18px) scale(0.88); }
+      25% { opacity: 1; }
+      to { opacity: 0; transform: translateY(-28px) scale(1.05); }
+    }
+
+    .grass { --type: #64d96f; }
+    .poison { --type: #b56bdb; }
+    .fire { --type: #ff784f; }
+    .flying { --type: #8aa8ff; }
+    .water { --type: #57b7ff; }
+    .bug { --type: #b9d957; }
+    .normal { --type: #c8c1b4; }
+    .electric { --type: #f8d84e; }
+    .ground { --type: #d5aa62; }
+    .psychic { --type: #ff79b5; }
+    .fighting { --type: #dc705b; }
+    .rock { --type: #bba466; }
+    .steel { --type: #a9b7c9; }
+    .ghost { --type: #8270c7; }
+    .ice { --type: #82dbe8; }
+    .dragon { --type: #8068ff; }
+    .dark { --type: #756b65; }
+    .fairy { --type: #ff9ad1; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    @media (max-width: 1080px) {
+      .battle-shell { grid-template-columns: 1fr; }
+      .sidebar-controls {
+        position: static;
+        grid-template-columns: repeat(6, 56px);
+        justify-content: center;
+      }
+      .icon-button::after {
+        left: 50%;
+        top: auto;
+        bottom: calc(100% + 8px);
+        transform: translate(-50%, 6px);
+      }
+      .icon-button:focus-visible::after,
+      .icon-button.reveal::after {
+        transform: translate(-50%, 0);
+      }
+      .arena-board { grid-template-columns: 1fr; }
+      .vs-badge { margin: 0 auto; }
+    }
+
+    @media (max-width: 680px) {
+      .site-header { align-items: flex-start; }
+      .brand span { display: none; }
+      .header-actions { gap: 6px; }
+      .nav-link { padding: 0 10px; }
+      .hero { grid-template-columns: 1fr; }
+      .arena-stats { grid-template-columns: repeat(2, 1fr); }
+      .sidebar-controls { grid-template-columns: repeat(3, 56px); }
+      .battle-card, .empty-slot { min-height: 500px; border-radius: 26px; }
+      .stat-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html#collection" aria-label="Back to Noor's Collection">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span>
+        <strong>Pokédex App</strong>
+        <span>Noor's Collection</span>
+      </span>
+    </a>
+    <div class="header-actions">
+      <a class="nav-link" href="index.html#collection">Collection</a>
+      <a class="nav-link battle-nav" href="battle.html" aria-current="page">Battle Ground</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="pageTitle">
+      <div>
+        <p class="eyebrow">Premium Card Combat</p>
+        <h1 id="pageTitle">Battle Ground</h1>
+        <p class="subtitle">Draw a player card, reveal an opponent, then resolve a fast turn-based match using HP, speed, attack, defense, critical hits, and type advantage.</p>
+      </div>
+    </section>
+
+    <section class="arena-stats" aria-label="Saved battle statistics">
+      <div class="stat-card"><strong id="totalBattles">0</strong><span>Total Battles</span></div>
+      <div class="stat-card"><strong id="playerWins">0</strong><span>Player Wins</span></div>
+      <div class="stat-card"><strong id="playerLosses">0</strong><span>Player Losses</span></div>
+      <div class="stat-card"><strong id="winRate">0%</strong><span>Win Rate</span></div>
+    </section>
+
+    <div class="battle-shell">
+      <aside class="sidebar-controls" aria-label="Battle controls">
+        <button id="drawBtn" class="icon-button" type="button" aria-label="Draw Player Card" data-label="Draw Card" title="Draw Player Card">◈</button>
+        <button id="startBtn" class="icon-button primary-btn" type="button" aria-label="Start Battle" data-label="Start Battle" title="Start Battle" disabled>▶</button>
+        <button id="attackBtn" class="icon-button" type="button" aria-label="Attack" data-label="Attack" title="Attack" disabled>⚔</button>
+        <button id="autoBtn" class="icon-button" type="button" aria-label="Auto Battle" data-label="Auto Battle" title="Auto Battle" disabled>⟳</button>
+        <button id="resetBtn" class="icon-button" type="button" aria-label="Reset Match" data-label="Reset Match" title="Reset Match">↺</button>
+        <a class="icon-button button-link" href="index.html#collection" aria-label="Back to Collection" data-label="Collection" title="Back to Collection">←</a>
+      </aside>
+
+      <section class="arena-panel" aria-label="Battle arena">
+        <div id="winnerBanner" class="winner-banner" aria-live="polite">Draw a card to enter the arena.</div>
+
+        <div class="arena-board">
+          <article class="fighter-zone" aria-labelledby="playerLabel">
+            <div class="zone-head">
+              <span id="playerLabel">Player Card</span>
+              <strong id="playerHpText">HP 0 / 0</strong>
+            </div>
+            <div class="health-shell" role="meter" aria-label="Player health" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <span id="playerHealth" class="health-bar"></span>
+            </div>
+            <div id="playerCard" class="empty-slot">Draw Player Card</div>
+          </article>
+
+          <div class="vs-badge" aria-label="Versus">VS</div>
+
+          <article class="fighter-zone" aria-labelledby="opponentLabel">
+            <div class="zone-head">
+              <span id="opponentLabel">Opponent Card</span>
+              <strong id="opponentHpText">HP 0 / 0</strong>
+            </div>
+            <div class="health-shell" role="meter" aria-label="Opponent health" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <span id="opponentHealth" class="health-bar"></span>
+            </div>
+            <div id="opponentCard" class="empty-slot">Opponent appears after draw</div>
+          </article>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const typeColors = {
+      Normal: "#c8c1b4", Fire: "#ff784f", Water: "#57b7ff", Electric: "#f8d84e",
+      Grass: "#64d96f", Ice: "#82dbe8", Fighting: "#dc705b", Poison: "#b56bdb",
+      Ground: "#d5aa62", Flying: "#8aa8ff", Psychic: "#ff79b5", Bug: "#b9d957",
+      Rock: "#bba466", Ghost: "#8270c7", Dragon: "#8068ff", Dark: "#756b65",
+      Steel: "#a9b7c9", Fairy: "#ff9ad1"
+    };
+
+    function p(id, name, types, hp, attack, defense, speed, rarity, description, stage, weakness, ability) {
+      return { id, name, types, hp, attack, defense, speed, rarity, description, stage, weakness, ability,
+        image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png` };
+    }
+
+    const pokemonData = [
+      p(1,"Bulbasaur",["Grass","Poison"],70,48,52,45,"Common","A dependable seed Pokemon that stores energy in the bulb on its back.","Basic","Fire","Overgrow"),
+      p(3,"Venusaur",["Grass","Poison"],128,84,88,64,"Rare","The flower on its back gathers sunlight to fuel heavy grass attacks.","Stage 2","Fire","Jungle Bloom"),
+      p(4,"Charmander",["Fire"],64,56,44,60,"Common","The flame on its tail burns brighter when it is ready to battle.","Basic","Water","Blaze"),
+      p(6,"Charizard",["Fire","Flying"],138,96,82,92,"Holo Rare","It soars through the sky and blasts intense fire from above.","Stage 2","Water","Inferno Wings"),
+      p(7,"Squirtle",["Water"],68,48,64,43,"Common","It withdraws into its shell before countering with pressurized water.","Basic","Electric","Torrent"),
+      p(9,"Blastoise",["Water"],136,88,100,72,"Rare","Water cannons on its shell fire with enough force to break stone.","Stage 2","Electric","Hydro Cannon"),
+      p(25,"Pikachu",["Electric"],72,64,48,98,"Rare","Electricity builds in its cheeks before it releases a quick shock.","Basic","Ground","Static"),
+      p(26,"Raichu",["Electric"],98,88,64,110,"Rare","It channels stored electricity through its tail to stay grounded.","Stage 1","Ground","Surge Surfer"),
+      p(38,"Ninetales",["Fire"],106,82,78,106,"Rare","Its nine tails shimmer with a mysterious flame-like energy.","Stage 1","Water","Flash Fire"),
+      p(59,"Arcanine",["Fire"],124,104,84,96,"Rare","A noble Pokemon known for its speed, loyalty, and blazing charge.","Stage 1","Water","Intimidate"),
+      p(65,"Alakazam",["Psychic"],96,58,64,112,"Holo Rare","A master of psychic attacks with a mind sharper than any blade.","Stage 2","Dark","Synchronize"),
+      p(68,"Machamp",["Fighting"],130,110,88,66,"Rare","Its four arms can throw rapid punches from every angle.","Stage 2","Psychic","Guts"),
+      p(76,"Golem",["Rock","Ground"],128,102,118,48,"Rare","It rolls down mountains with enough force to shake the ground.","Stage 2","Water","Sturdy"),
+      p(94,"Gengar",["Ghost","Poison"],108,72,70,116,"Holo Rare","It slips through shadows and strikes with eerie ghostly energy.","Stage 2","Dark","Cursed Body"),
+      p(113,"Chansey",["Normal"],150,28,42,52,"Rare","Its gentle nature and high stamina make it excellent support.","Basic","Fighting","Natural Cure"),
+      p(123,"Scyther",["Bug","Flying"],102,102,78,112,"Rare","It moves like a green blur and cuts with scythe-like arms.","Basic","Fire","Technician"),
+      p(130,"Gyarados",["Water","Flying"],136,118,86,82,"Holo Rare","A furious sea serpent that overwhelms foes with raw power.","Stage 1","Electric","Intimidate"),
+      p(131,"Lapras",["Water","Ice"],132,82,86,66,"Rare","A gentle swimmer with icy songs and sturdy defensive power.","Basic","Electric","Water Absorb"),
+      p(143,"Snorlax",["Normal"],160,106,92,32,"Holo Rare","A massive Pokemon that shrugs off hits and counters with heavy force.","Basic","Fighting","Thick Fat"),
+      p(144,"Articuno",["Ice","Flying"],122,88,100,88,"Legendary","This legendary bird freezes the air with every elegant wingbeat.","Legendary","Rock","Pressure"),
+      p(145,"Zapdos",["Electric","Flying"],122,96,88,100,"Legendary","A legendary bird that appears with thunderclouds and bright sparks.","Legendary","Rock","Static"),
+      p(146,"Moltres",["Fire","Flying"],122,100,88,96,"Legendary","Its fiery wings leave trails of flame across the sky.","Legendary","Rock","Flame Body"),
+      p(149,"Dragonite",["Dragon","Flying"],146,124,98,86,"Holo Rare","A kindhearted dragon with enough power to circle the globe.","Stage 2","Ice","Inner Focus"),
+      p(150,"Mewtwo",["Psychic"],148,112,96,124,"Legendary","A genetically engineered Pokemon with overwhelming psychic power.","Legendary","Dark","Pressure"),
+      p(151,"Mew",["Psychic"],126,92,92,108,"Mythic","A mythical Pokemon said to contain the genetic code of all Pokemon.","Mythic","Dark","Synchronize"),
+      p(157,"Typhlosion",["Fire"],126,96,84,100,"Rare","It creates explosive heat waves when its flames flare up.","Stage 2","Water","Blaze"),
+      p(160,"Feraligatr",["Water"],130,104,96,78,"Rare","It lunges forward with crushing jaws and unstoppable momentum.","Stage 2","Electric","Torrent"),
+      p(181,"Ampharos",["Electric"],116,88,86,64,"Rare","Its tail shines like a beacon and stores steady electric power.","Stage 2","Ground","Static"),
+      p(196,"Espeon",["Psychic"],96,76,74,116,"Rare","It reads air currents and enemy intent with its sensitive fur.","Stage 1","Dark","Magic Bounce"),
+      p(197,"Umbreon",["Dark"],112,74,104,76,"Rare","Its rings glow in darkness before it launches a patient counterattack.","Stage 1","Fighting","Synchronize"),
+      p(208,"Steelix",["Steel","Ground"],128,96,138,42,"Rare","A hardened steel serpent that tunnels deeper than Onix ever could.","Stage 1","Fire","Sturdy"),
+      p(212,"Scizor",["Bug","Steel"],112,116,104,70,"Holo Rare","Its steel claws strike quickly and look heavier than they feel.","Stage 1","Fire","Technician"),
+      p(248,"Tyranitar",["Rock","Dark"],148,126,116,72,"Holo Rare","An armored powerhouse that can change the shape of mountains.","Stage 2","Fighting","Sand Stream"),
+      p(254,"Sceptile",["Grass"],118,104,78,120,"Rare","Leaf blades on its arms slash with precise jungle speed.","Stage 2","Fire","Overgrow"),
+      p(257,"Blaziken",["Fire","Fighting"],126,118,82,92,"Holo Rare","It leaps high and lands blazing kicks with explosive force.","Stage 2","Water","Speed Boost"),
+      p(260,"Swampert",["Water","Ground"],138,112,100,72,"Rare","Powerful arms let it swim through rough water and move boulders.","Stage 2","Grass","Torrent"),
+      p(282,"Gardevoir",["Psychic","Fairy"],112,84,82,92,"Rare","It protects trusted trainers with elegant psychic force.","Stage 2","Steel","Trace"),
+      p(306,"Aggron",["Steel","Rock"],132,110,132,54,"Rare","A territorial armored Pokemon that defends mountains with force.","Stage 2","Fighting","Rock Head"),
+      p(330,"Flygon",["Ground","Dragon"],118,100,86,108,"Rare","Its wings stir desert sand into a veil around its attacks.","Stage 2","Ice","Levitate"),
+      p(350,"Milotic",["Water"],126,76,98,88,"Rare","A graceful Pokemon whose calm presence can steady an entire team.","Stage 1","Electric","Marvel Scale"),
+      p(359,"Absol",["Dark"],96,116,72,92,"Rare","It appears before disasters and strikes with sudden dark power.","Basic","Fighting","Super Luck"),
+      p(373,"Salamence",["Dragon","Flying"],140,128,92,104,"Holo Rare","A dragon that finally gained wings and now battles with joy.","Stage 2","Ice","Intimidate"),
+      p(376,"Metagross",["Steel","Psychic"],138,124,126,72,"Holo Rare","Four brains coordinate its heavy body with machine-like precision.","Stage 2","Fire","Clear Body"),
+      p(384,"Rayquaza",["Dragon","Flying"],154,136,98,116,"Legendary","A sky-dwelling legend that descends with overwhelming dragon power.","Legendary","Ice","Air Lock"),
+      p(392,"Infernape",["Fire","Fighting"],120,108,82,116,"Rare","It mixes nimble martial arts with roaring flames.","Stage 2","Water","Iron Fist"),
+      p(395,"Empoleon",["Water","Steel"],126,98,106,72,"Rare","Steel-edged wings and royal poise make it a durable attacker.","Stage 2","Electric","Torrent"),
+      p(445,"Garchomp",["Dragon","Ground"],144,130,104,110,"Holo Rare","It tears across the ground and air like a living jet.","Stage 2","Ice","Rough Skin"),
+      p(448,"Lucario",["Fighting","Steel"],112,112,84,98,"Holo Rare","It senses aura and shapes that energy into precise combat strikes.","Stage 1","Fire","Inner Focus"),
+      p(497,"Serperior",["Grass"],118,88,100,114,"Rare","Regal and swift, it pressures rivals with piercing confidence.","Stage 2","Fire","Contrary"),
+      p(500,"Emboar",["Fire","Fighting"],144,120,86,62,"Rare","It charges with wrestling power and a blazing beard of fire.","Stage 2","Water","Reckless"),
+      p(503,"Samurott",["Water"],126,108,92,76,"Rare","A disciplined fighter that draws shell blades in a flash.","Stage 2","Electric","Torrent"),
+      p(571,"Zoroark",["Dark"],104,112,72,106,"Rare","It creates illusions to mislead foes before striking from hiding.","Stage 1","Fighting","Illusion"),
+      p(612,"Haxorus",["Dragon"],128,134,96,98,"Holo Rare","Its tusks can cleave steel and its battle focus rarely breaks.","Stage 2","Ice","Mold Breaker"),
+      p(635,"Hydreigon",["Dark","Dragon"],140,128,92,98,"Holo Rare","A ruthless three-headed dragon that attacks anything it sees.","Stage 2","Fairy","Levitate"),
+      p(658,"Greninja",["Water","Dark"],118,112,78,126,"Holo Rare","A swift ninja Pokemon that shapes water into cutting stars.","Stage 2","Electric","Battle Bond"),
+      p(700,"Sylveon",["Fairy"],112,78,86,76,"Rare","Ribbon-like feelers calm allies and soften enemy aggression.","Stage 1","Steel","Pixilate")
+    ];
+
+    const els = {
+      playerCard: document.querySelector("#playerCard"),
+      opponentCard: document.querySelector("#opponentCard"),
+      playerHealth: document.querySelector("#playerHealth"),
+      opponentHealth: document.querySelector("#opponentHealth"),
+      playerHpText: document.querySelector("#playerHpText"),
+      opponentHpText: document.querySelector("#opponentHpText"),
+      playerMeter: document.querySelector("[aria-label='Player health']"),
+      opponentMeter: document.querySelector("[aria-label='Opponent health']"),
+      winner: document.querySelector("#winnerBanner"),
+      drawBtn: document.querySelector("#drawBtn"),
+      startBtn: document.querySelector("#startBtn"),
+      attackBtn: document.querySelector("#attackBtn"),
+      autoBtn: document.querySelector("#autoBtn"),
+      resetBtn: document.querySelector("#resetBtn"),
+      totalBattles: document.querySelector("#totalBattles"),
+      playerWins: document.querySelector("#playerWins"),
+      playerLosses: document.querySelector("#playerLosses"),
+      winRate: document.querySelector("#winRate")
+    };
+
+    const state = {
+      player: null,
+      opponent: null,
+      playerHp: 0,
+      opponentHp: 0,
+      active: null,
+      started: false,
+      over: false,
+      round: 0,
+      autoTimer: null,
+      messages: [],
+      stats: { totalBattles: 0, playerWins: 0, playerLosses: 0, lastWinner: "None" }
+    };
+
+    function initBattle() {
+      state.stats = { ...state.stats, ...JSON.parse(localStorage.getItem("noor-battle-stats") || "{}") };
+      updateBattleStatsUI();
+      resetBattle();
+      document.querySelectorAll(".icon-button").forEach(control => {
+        control.addEventListener("click", () => revealControlLabel(control));
+      });
+      els.drawBtn.addEventListener("click", () => {
+        state.player = drawRandomPokemon();
+        state.opponent = drawRandomPokemon(state.player.id);
+        state.playerHp = state.player.hp;
+        state.opponentHp = state.opponent.hp;
+        state.started = false;
+        state.over = false;
+        state.round = 0;
+        state.active = null;
+        clearInterval(state.autoTimer);
+        renderBattleCard("player", state.player);
+        renderBattleCard("opponent", state.opponent);
+        updateHealthBars();
+        addBattleLog(`Cards drawn: Player gets ${state.player.name}; opponent gets ${state.opponent.name}.`, true);
+        els.winner.className = "winner-banner";
+        els.winner.textContent = "Cards drawn. Start the battle when ready.";
+        els.startBtn.disabled = false;
+        els.attackBtn.disabled = true;
+        els.autoBtn.disabled = true;
+      });
+      els.startBtn.addEventListener("click", startBattle);
+      els.attackBtn.addEventListener("click", performAttackTurn);
+      els.autoBtn.addEventListener("click", () => {
+        if (state.autoTimer) {
+          clearInterval(state.autoTimer);
+          state.autoTimer = null;
+          els.autoBtn.textContent = "⟳";
+          els.autoBtn.setAttribute("aria-label", "Auto Battle");
+          els.autoBtn.dataset.label = "Auto Battle";
+          return;
+        }
+        els.autoBtn.textContent = "Ⅱ";
+        els.autoBtn.setAttribute("aria-label", "Pause Auto Battle");
+        els.autoBtn.dataset.label = "Pause Auto";
+        state.autoTimer = setInterval(performAttackTurn, 900);
+      });
+      els.resetBtn.addEventListener("click", resetBattle);
+    }
+
+    function revealControlLabel(control) {
+      control.classList.add("reveal");
+      clearTimeout(control._labelTimer);
+      control._labelTimer = setTimeout(() => control.classList.remove("reveal"), 900);
+    }
+
+    function getPokemonData() {
+      return pokemonData.map(mon => ({ ...mon }));
+    }
+
+    function drawRandomPokemon(excludeId) {
+      const deck = getPokemonData().filter(mon => mon.id !== excludeId);
+      return deck[Math.floor(Math.random() * deck.length)];
+    }
+
+    function renderBattleCard(slot, mon) {
+      const target = slot === "player" ? els.playerCard : els.opponentCard;
+      target.className = "";
+      target.innerHTML = `
+        <article class="battle-card ${mon.types[0].toLowerCase()}" data-card="${slot}">
+          <div class="card-head">
+            <span class="dex-no">#${String(mon.id).padStart(3, "0")}</span>
+            <span class="rarity-badge">${mon.rarity}</span>
+          </div>
+          <div class="card-art"><img src="${mon.image}" alt="${mon.name} official artwork" loading="lazy"></div>
+          <div class="card-head">
+            <h2>${mon.name}</h2>
+            <span class="hp-badge">HP ${mon.hp}</span>
+          </div>
+          <div class="type-row">${mon.types.map(type => `<span class="type-chip" style="--chip:${typeColors[type]}">${type}</span>`).join("")}</div>
+          <p class="ability"><strong>Ability:</strong> ${mon.ability}</p>
+          <div class="stat-grid">
+            <div class="mini-stat"><span>ATK</span><strong>${mon.attack}</strong></div>
+            <div class="mini-stat"><span>DEF</span><strong>${mon.defense}</strong></div>
+            <div class="mini-stat"><span>SPD</span><strong>${mon.speed}</strong></div>
+            <div class="mini-stat"><span>Weak</span><strong>${mon.weakness}</strong></div>
+            <div class="mini-stat"><span>Stage</span><strong>${mon.stage}</strong></div>
+            <div class="mini-stat"><span>Type</span><strong>${mon.types[0]}</strong></div>
+          </div>
+        </article>`;
+    }
+
+    function startBattle() {
+      if (!state.player || !state.opponent) {
+        addBattleLog("Draw both cards before starting the battle.");
+        return;
+      }
+      state.started = true;
+      state.over = false;
+      state.round = 0;
+      state.playerHp = state.player.hp;
+      state.opponentHp = state.opponent.hp;
+      state.active = state.player.speed >= state.opponent.speed ? "player" : "opponent";
+      updateHealthBars();
+      addBattleLog(`${state.active === "player" ? state.player.name : state.opponent.name} is faster and attacks first.`);
+      els.winner.className = "winner-banner";
+      els.winner.textContent = `${state.active === "player" ? "Player" : "Opponent"} has initiative.`;
+      els.startBtn.disabled = true;
+      els.attackBtn.disabled = false;
+      els.autoBtn.disabled = false;
+    }
+
+    function performAttackTurn() {
+      if (!state.started || state.over) return;
+      const attackerKey = state.active;
+      const defenderKey = attackerKey === "player" ? "opponent" : "player";
+      const attacker = state[attackerKey];
+      const defender = state[defenderKey];
+      const result = calculateDamage(attacker, defender);
+
+      if (defenderKey === "player") state.playerHp = Math.max(0, state.playerHp - result.damage);
+      else state.opponentHp = Math.max(0, state.opponentHp - result.damage);
+
+      state.round += 1;
+      const remainingHp = defenderKey === "player" ? state.playerHp : state.opponentHp;
+      addBattleLog(`Round ${state.round}: ${attacker.name} attacked ${defender.name} for ${result.damage} damage. ${defender.name} has ${remainingHp} HP remaining.`);
+      if (result.critical) addBattleLog(`Critical hit: ${attacker.name}'s damage was multiplied by 1.5.`);
+      if (result.typeAdvantage) addBattleLog(`Type advantage: ${attacker.types.join("/")} pressured ${defender.types.join("/")}, adding 20% damage.`);
+
+      showDamagePopup(defenderKey, result.damage);
+      document.querySelector(`[data-card="${attackerKey}"]`)?.classList.add("shake");
+      setTimeout(() => document.querySelector(`[data-card="${attackerKey}"]`)?.classList.remove("shake"), 320);
+      updateHealthBars();
+
+      if (state.playerHp <= 0 || state.opponentHp <= 0) {
+        endBattle();
+        return;
+      }
+
+      state.active = defenderKey;
+    }
+
+    function calculateDamage(attacker, defender) {
+      let damage = Math.max(5, attacker.attack - Math.floor(defender.defense / 2));
+      const critical = Math.random() < 0.15;
+      const typeAdvantage = checkTypeAdvantage(attacker, defender);
+      if (critical) damage *= 1.5;
+      if (typeAdvantage) damage *= 1.2;
+      return { damage: Math.round(damage), critical, typeAdvantage };
+    }
+
+    function checkTypeAdvantage(attacker, defender) {
+      const rules = {
+        Fire: ["Grass"], Grass: ["Water"], Water: ["Fire"], Electric: ["Water"],
+        Psychic: ["Fighting"], Fighting: ["Normal"], Ice: ["Dragon"], Dragon: ["Dragon"],
+        Dark: ["Psychic"], Fairy: ["Dragon"], Ground: ["Electric"]
+      };
+      return attacker.types.some(type => rules[type]?.some(target => defender.types.includes(target)));
+    }
+
+    function updateHealthBars() {
+      const playerPercent = state.player ? Math.max(0, (state.playerHp / state.player.hp) * 100) : 0;
+      const opponentPercent = state.opponent ? Math.max(0, (state.opponentHp / state.opponent.hp) * 100) : 0;
+      els.playerHealth.style.width = `${playerPercent}%`;
+      els.opponentHealth.style.width = `${opponentPercent}%`;
+      els.playerHealth.classList.toggle("low", playerPercent <= 30);
+      els.opponentHealth.classList.toggle("low", opponentPercent <= 30);
+      els.playerHpText.textContent = state.player ? `HP ${state.playerHp} / ${state.player.hp}` : "HP 0 / 0";
+      els.opponentHpText.textContent = state.opponent ? `HP ${state.opponentHp} / ${state.opponent.hp}` : "HP 0 / 0";
+      els.playerMeter.setAttribute("aria-valuenow", Math.round(playerPercent));
+      els.opponentMeter.setAttribute("aria-valuenow", Math.round(opponentPercent));
+    }
+
+    function showDamagePopup(targetKey, damage) {
+      const zone = targetKey === "player" ? els.playerCard : els.opponentCard;
+      const popup = document.createElement("span");
+      popup.className = "damage-popup";
+      popup.textContent = `-${damage}`;
+      zone.appendChild(popup);
+      setTimeout(() => popup.remove(), 850);
+    }
+
+    function addBattleLog(message, clear = false) {
+      if (clear) state.messages = [];
+      state.messages.unshift(message);
+      state.messages = state.messages.slice(0, 24);
+    }
+
+    function endBattle() {
+      state.over = true;
+      state.started = false;
+      clearInterval(state.autoTimer);
+      state.autoTimer = null;
+      els.autoBtn.textContent = "⟳";
+      els.autoBtn.setAttribute("aria-label", "Auto Battle");
+      els.autoBtn.dataset.label = "Auto Battle";
+      els.attackBtn.disabled = true;
+      els.autoBtn.disabled = true;
+      els.startBtn.disabled = true;
+
+      const playerWon = state.opponentHp <= 0;
+      const winnerName = playerWon ? state.player.name : state.opponent.name;
+      state.stats.totalBattles += 1;
+      if (playerWon) state.stats.playerWins += 1;
+      else state.stats.playerLosses += 1;
+      state.stats.lastWinner = winnerName;
+      saveBattleStats();
+      updateBattleStatsUI();
+      els.winner.className = `winner-banner ${playerWon ? "win" : "loss"}`;
+      els.winner.textContent = `${winnerName} wins the match after ${state.round} rounds.`;
+      addBattleLog(`Winner: ${winnerName}. Match ended after ${state.round} rounds.`);
+    }
+
+    function resetBattle() {
+      clearInterval(state.autoTimer);
+      state.autoTimer = null;
+      state.player = null;
+      state.opponent = null;
+      state.playerHp = 0;
+      state.opponentHp = 0;
+      state.active = null;
+      state.started = false;
+      state.over = false;
+      state.round = 0;
+      els.playerCard.className = "empty-slot";
+      els.opponentCard.className = "empty-slot";
+      els.playerCard.textContent = "Draw Player Card";
+      els.opponentCard.textContent = "Opponent appears after draw";
+      els.winner.className = "winner-banner";
+      els.winner.textContent = "Draw a card to enter the arena.";
+      state.messages = [];
+      addBattleLog("Match reset. Draw a new player card to begin.");
+      els.startBtn.disabled = true;
+      els.attackBtn.disabled = true;
+      els.autoBtn.disabled = true;
+      els.autoBtn.textContent = "⟳";
+      els.autoBtn.setAttribute("aria-label", "Auto Battle");
+      els.autoBtn.dataset.label = "Auto Battle";
+      updateHealthBars();
+    }
+
+    function saveBattleStats() {
+      localStorage.setItem("noor-battle-stats", JSON.stringify(state.stats));
+    }
+
+    function updateBattleStatsUI() {
+      const rate = state.stats.totalBattles ? Math.round((state.stats.playerWins / state.stats.totalBattles) * 100) : 0;
+      els.totalBattles.textContent = state.stats.totalBattles;
+      els.playerWins.textContent = state.stats.playerWins;
+      els.playerLosses.textContent = state.stats.playerLosses;
+      els.winRate.textContent = `${rate}%`;
+    }
+
+    initBattle();
+  </script>
+</body>
+</html>

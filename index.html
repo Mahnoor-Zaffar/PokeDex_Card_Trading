@@ -215,6 +215,12 @@
     .nav-link:hover, .theme-toggle:hover { color: var(--ink); background: rgba(255,255,255,0.08); }
     body.light .nav-link:hover, body.light .theme-toggle:hover { background: rgba(20,24,34,0.06); }
 
+    .battle-nav {
+      color: #10131b;
+      background: linear-gradient(135deg, #f6cd6a, #69d7ff);
+      border: 1px solid rgba(255,255,255,0.18);
+    }
+
     main {
       width: min(1500px, 100%);
       margin: 0 auto;
@@ -368,7 +374,7 @@
 
     .stats-strip {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
       gap: 12px;
       margin: 10px 0 34px;
     }
@@ -767,7 +773,7 @@
       .site-header { align-items: flex-start; }
       .brand span { display: none; }
       .header-actions { gap: 6px; }
-      .nav-link { display: none; }
+      .nav-link:not(.battle-nav) { display: none; }
       .nav-search.open {
         grid-template-columns: 42px minmax(106px, 42vw) 38px;
       }
@@ -798,6 +804,7 @@
         <button id="searchClear" class="search-clear" type="button" aria-label="Clear search">×</button>
       </form>
       <a class="nav-link" href="#collection">Collection</a>
+      <a class="nav-link battle-nav" href="battle.html">Battle Ground</a>
       <button id="themeToggle" class="theme-toggle" type="button" aria-label="Switch theme">Light</button>
     </div>
   </header>
@@ -839,6 +846,7 @@
       <div class="vault-stat"><strong id="favoriteCount">0</strong><span>Favorites</span></div>
       <div class="vault-stat"><strong id="typeCount">0</strong><span>Types</span></div>
       <div class="vault-stat"><strong id="rareCount">0</strong><span>Rare+</span></div>
+      <div class="vault-stat"><strong id="battlesPlayedCount">0</strong><span>Battles Played</span></div>
     </section>
 
     <section id="collection" aria-labelledby="collectionTitle">
@@ -994,6 +1002,7 @@
       favoriteCount: document.querySelector("#favoriteCount"),
       typeCount: document.querySelector("#typeCount"),
       rareCount: document.querySelector("#rareCount"),
+      battlesPlayedCount: document.querySelector("#battlesPlayedCount"),
       modal: document.querySelector("#detailModal"),
       modalContent: document.querySelector("#modalContent"),
       closeModal: document.querySelector("#closeModal"),
@@ -1025,6 +1034,8 @@
       els.favoriteCount.textContent = state.favorites.size;
       els.typeCount.textContent = typeTotal;
       els.rareCount.textContent = rareTotal;
+      const battleStats = JSON.parse(localStorage.getItem("noor-battle-stats") || "{}");
+      els.battlesPlayedCount.textContent = battleStats.totalBattles || 0;
     }
 
     function getVisibleCards() {

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
+  <title>Battle Ground - Noor's Collection</title>
+  <link rel="preconnect" href="https://raw.githubusercontent.com">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="battle-page">
+  <header class="site-header">
+    <a class="brand" href="index.html#collection" aria-label="Back to Noor's Collection">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span>
+        <strong>Pokédex App</strong>
+        <span>Noor's Collection</span>
+      </span>
+    </a>
+    <div class="header-actions">
+      <a class="nav-link" href="index.html#collection">Collection</a>
+      <a class="nav-link battle-nav" href="battle.html" aria-current="page">Battle Ground</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="pageTitle">
+      <div>
+        <p class="eyebrow">Premium Card Combat</p>
+        <h1 id="pageTitle">Battle Ground</h1>
+        <p class="subtitle">Draw a player card, reveal an opponent, then resolve a fast turn-based match using HP, speed, attack, defense, critical hits, and type advantage.</p>
+      </div>
+    </section>
+
+    <div class="battle-shell">
+      <aside class="sidebar-controls" aria-label="Battle controls">
+        <button id="drawBtn" class="icon-button" type="button" aria-label="Draw Player Card" data-label="Draw Card" title="Draw Player Card">◈</button>
+        <button id="startBtn" class="icon-button primary-btn" type="button" aria-label="Start Battle" data-label="Start Battle" title="Start Battle" disabled>▶</button>
+        <button id="attackBtn" class="icon-button" type="button" aria-label="Attack" data-label="Attack" title="Attack" disabled>⚔</button>
+        <button id="autoBtn" class="icon-button" type="button" aria-label="Auto Battle" data-label="Auto Battle" title="Auto Battle" disabled>⟳</button>
+        <button id="resetBtn" class="icon-button" type="button" aria-label="Reset Match" data-label="Reset Match" title="Reset Match">↺</button>
+        <a class="icon-button button-link" href="index.html#collection" aria-label="Back to Collection" data-label="Collection" title="Back to Collection">←</a>
+      </aside>
+
+      <section class="arena-panel" aria-label="Battle arena">
+        <div id="winnerBanner" class="winner-banner" aria-live="polite">Draw a card to enter the arena.</div>
+
+        <div class="arena-board">
+          <article class="fighter-zone" aria-labelledby="playerLabel">
+            <div class="zone-head">
+              <span id="playerLabel">Player Card</span>
+              <strong id="playerHpText">HP 0 / 0</strong>
+            </div>
+            <div class="health-shell" role="meter" aria-label="Player health" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <span id="playerHealth" class="health-bar"></span>
+            </div>
+            <div id="playerCard" class="empty-slot">Draw Player Card</div>
+          </article>
+
+          <div class="vs-badge" aria-label="Versus">VS</div>
+
+          <article class="fighter-zone" aria-labelledby="opponentLabel">
+            <div class="zone-head">
+              <span id="opponentLabel">Opponent Card</span>
+              <strong id="opponentHpText">HP 0 / 0</strong>
+            </div>
+            <div class="health-shell" role="meter" aria-label="Opponent health" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <span id="opponentHealth" class="health-bar"></span>
+            </div>
+            <div id="opponentCard" class="empty-slot">Opponent appears after draw</div>
+          </article>
+        </div>
+      </section>
+    </div>
+
+    <div id="winnerPopup" class="winner-popup hidden" role="dialog" aria-modal="true" aria-live="assertive" aria-labelledby="winnerPopupTitle">
+      <div class="winner-popup-card">
+        <p id="winnerPopupKicker">Victory</p>
+        <h2 id="winnerPopupTitle">Winner</h2>
+        <strong id="winnerPopupDetail">Match complete</strong>
+      </div>
+    </div>
+  </main>
+
+  <script src="pokemon-data.js"></script>
+  <script src="battle.js"></script>
+</body>
+</html>

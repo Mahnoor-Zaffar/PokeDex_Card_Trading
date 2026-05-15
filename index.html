@@ -3,136 +3,122 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CardDex Battle Arena</title>
+  <meta name="color-scheme" content="dark light">
+  <title>Pokédex App - Noor's Collection</title>
   <link rel="preconnect" href="https://raw.githubusercontent.com">
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="collection-page">
   <header class="site-header">
-    <a class="brand" href="#pokedex" aria-label="CardDex home">
-      <span class="pokeball-mark" aria-hidden="true"></span>
+    <a class="brand" href="#collection" aria-label="Noor's Collection home">
+      <span class="brand-mark" aria-hidden="true"></span>
       <span>
-        <strong>CardDex</strong>
-        <small>Pokémon Battle Cards</small>
+        <strong>Pokédex App</strong>
+        <span>Noor's Collection</span>
       </span>
     </a>
-
-    <nav class="top-nav" aria-label="Primary navigation">
-      <a href="#pokedex">Pokédex</a>
-      <a href="#battle-arena">Battle Arena</a>
-    </nav>
+    <div class="header-actions">
+      <form id="navSearch" class="nav-search" role="search" aria-label="Search Pokémon cards">
+        <button id="searchToggle" class="search-toggle" type="button" aria-label="Open search">⌕</button>
+        <input id="searchInput" type="search" aria-label="Search by name, ability, rarity, or type" autocomplete="off">
+        <button id="searchClear" class="search-clear" type="button" aria-label="Clear search">×</button>
+      </form>
+      <a class="nav-link" href="#collection">Collection</a>
+      <a class="nav-link battle-nav" href="battle.html">Battle Ground</a>
+      <button id="themeToggle" class="theme-toggle" type="button" aria-label="Switch theme">Light</button>
+    </div>
   </header>
 
   <main>
     <section class="hero" aria-labelledby="pageTitle">
       <div>
-        <p class="eyebrow">Interactive CardDex</p>
-        <h1 id="pageTitle">Browse Pokémon cards and battle with their stats.</h1>
-        <p class="hero-copy">Search, filter, inspect details, then draw two cards into a fast turn-based Battle Arena.</p>
+        <p class="eyebrow">Premium Digital Card Vault</p>
+        <h1 id="pageTitle">Noor's Collection</h1>
+        <p class="hero-copy">A refined Pokédex for browsing rare cards, saving favorites, and opening polished Pokémon profiles with collectible-grade artwork and stats.</p>
+        <div class="hero-actions">
+          <a class="primary-btn button-link" href="#collection">Browse Vault</a>
+          <button id="heroFavoriteBtn" class="ghost-btn" type="button">View Favorites</button>
+        </div>
       </div>
-      <div class="hero-preview" aria-label="Featured Pokémon card">
-        <span>HP 138</span>
-        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png" alt="Charizard artwork">
-        <strong>Charizard</strong>
-        <small>Fire / Flying</small>
-      </div>
+
+      <article class="featured-card" aria-label="Featured premium Pokémon card">
+        <div class="featured-head">
+          <span class="dex-no">#006</span>
+          <span class="rarity-badge">Holo Rare</span>
+        </div>
+        <div class="featured-art">
+          <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png" alt="Charizard official artwork">
+        </div>
+        <div class="featured-head">
+          <h2>Charizard</h2>
+          <span class="hp-badge">HP 138</span>
+        </div>
+        <div class="type-row" aria-label="Charizard types">
+          <span class="type-chip" style="--chip:#ff784f">Fire</span>
+          <span class="type-chip" style="--chip:#8aa8ff">Flying</span>
+        </div>
+        <p>Type-colored aura, large centered artwork, translucent borders, rarity finish, and holographic card shine set the tone for the entire vault.</p>
+      </article>
     </section>
 
-    <section id="pokedex" class="section-panel" aria-labelledby="pokedexTitle">
-      <div class="section-heading">
+    <section class="stats-strip" aria-label="Collection statistics">
+      <div class="vault-stat"><strong id="totalCount">0</strong><span>Total Cards</span></div>
+      <div class="vault-stat"><strong id="favoriteCount">0</strong><span>Favorites</span></div>
+      <div class="vault-stat"><strong id="typeCount">0</strong><span>Types</span></div>
+      <div class="vault-stat"><strong id="rareCount">0</strong><span>Rare+</span></div>
+      <div class="vault-stat"><strong id="battlesPlayedCount">0</strong><span>Battles Played</span></div>
+    </section>
+
+    <section id="collection" aria-labelledby="collectionTitle">
+      <div class="section-head">
         <div>
-          <p class="eyebrow">Pokédex</p>
-          <h2 id="pokedexTitle">Card Collection</h2>
+          <p class="eyebrow">Collection</p>
+          <h2 id="collectionTitle">Card Vault</h2>
+          <p>Search, filter, sort, favorite, and inspect Noor's curated premium Pokémon collection.</p>
         </div>
-        <p class="visible-count"><strong id="visibleCount">0</strong> Pokémon shown</p>
+        <div class="count-pill"><strong id="visibleCount">0</strong>&nbsp;shown</div>
       </div>
 
-      <div class="toolbar">
-        <label>
-          <span>Search</span>
-          <input id="searchInput" type="search" placeholder="Search by name">
-        </label>
-        <label>
+      <form class="toolbar" aria-label="Filter and sort Pokémon cards">
+        <label class="field">
           <span>Type</span>
           <select id="typeFilter"></select>
         </label>
-        <label>
+        <label class="field">
+          <span>Rarity</span>
+          <select id="rarityFilter"></select>
+        </label>
+        <label class="field">
           <span>Sort</span>
-          <select id="sortFilter">
-            <option value="id">ID ascending</option>
+          <select id="sortSelect">
+            <option value="id">Dex number</option>
             <option value="name">Name A-Z</option>
             <option value="hp">HP highest</option>
             <option value="attack">Attack highest</option>
+            <option value="defense">Defense highest</option>
             <option value="speed">Speed highest</option>
+            <option value="rarity">Rarity tier</option>
           </select>
         </label>
-      </div>
+        <label class="field">
+          <span>View</span>
+          <select id="favoriteFilter">
+            <option value="all">All cards</option>
+            <option value="favorites">Favorites only</option>
+          </select>
+        </label>
+      </form>
 
-      <div id="pokemonGrid" class="pokemon-grid"></div>
-    </section>
-
-    <section id="battle-arena" class="section-panel battle-section" aria-labelledby="battleTitle">
-      <div class="section-heading">
-        <div>
-          <p class="eyebrow">Battle Arena</p>
-          <h2 id="battleTitle">Pokémon Card Battle Game</h2>
-        </div>
-        <strong id="battleWinner" class="winner-banner">Draw cards to begin</strong>
-      </div>
-
-      <div class="arena-board">
-        <article class="combat-zone">
-          <div class="zone-header">
-            <span>Player Card</span>
-            <strong id="playerHpText">HP 0 / 0</strong>
-          </div>
-          <div class="health-track"><span id="playerHealthBar"></span></div>
-          <div id="playerCard" class="battle-card-slot empty-slot">Draw a player card</div>
-        </article>
-
-        <div class="vs-badge">VS</div>
-
-        <article class="combat-zone">
-          <div class="zone-header">
-            <span>Opponent Card</span>
-            <strong id="opponentHpText">HP 0 / 0</strong>
-          </div>
-          <div class="health-track"><span id="opponentHealthBar"></span></div>
-          <div id="opponentCard" class="battle-card-slot empty-slot">Draw an opponent card</div>
-        </article>
-      </div>
-
-      <div class="battle-controls" aria-label="Battle controls">
-        <button id="drawBattleCardsBtn" type="button">Draw Random Card</button>
-        <button id="startBattleBtn" class="primary-button" type="button">Start Battle</button>
-        <button id="attackBtn" type="button" disabled>Attack</button>
-        <button id="autoBattleBtn" type="button" disabled>Auto Battle</button>
-        <button id="resetBattleBtn" type="button">Reset Battle</button>
-      </div>
-
-      <div class="battle-info-grid">
-        <aside class="game-stats" aria-labelledby="statsTitle">
-          <h3 id="statsTitle">Game Stats</h3>
-          <div><span>Battles Played</span><strong id="battlesPlayed">0</strong></div>
-          <div><span>Wins</span><strong id="battleWins">0</strong></div>
-          <div><span>Losses</span><strong id="battleLosses">0</strong></div>
-          <div><span>Win Rate</span><strong id="battleWinRate">0%</strong></div>
-          <div><span>Last Winner</span><strong id="lastWinner">None</strong></div>
-        </aside>
-
-        <aside class="battle-log-panel" aria-labelledby="logTitle">
-          <h3 id="logTitle">Battle Log</h3>
-          <div id="battleLog" class="battle-log" aria-live="polite"></div>
-        </aside>
-      </div>
+      <div id="pokemonGrid" class="pokemon-grid" aria-live="polite"></div>
     </section>
   </main>
 
-  <dialog id="detailModal" class="detail-modal">
+  <dialog id="detailModal" class="modal">
+    <button id="closeModal" class="close-modal" type="button" aria-label="Close details">×</button>
     <div id="modalContent"></div>
-    <button id="closeModalBtn" class="modal-close" type="button" aria-label="Close details">×</button>
   </dialog>
 
+  <script src="pokemon-data.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
